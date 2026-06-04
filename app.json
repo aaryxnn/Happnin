@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Happnin",
+    "slug": "happnin",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "happnin",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.happnin.app"
+    },
+    "android": {
+      "package": "com.happnin.app"
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Happnin needs access to your photo gallery so organizers can choose event poster images."
+        }
+      ]
+    ]
+  }
+}
