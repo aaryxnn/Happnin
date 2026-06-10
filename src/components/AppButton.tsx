@@ -1,90 +1,119 @@
 import { ComponentType } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { LucideProps } from "lucide-react-native";
 
-import { colors, radius, shadows, spacing } from "../theme";
+import { colors, gradients, radius, shadows, spacing } from "../theme";
+import { Txt } from "./Txt";
+
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 type Props = {
   title: string;
   onPress: () => void;
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+  variant?: Variant;
   disabled?: boolean;
   loading?: boolean;
   icon?: ComponentType<LucideProps>;
 };
 
+const fgColor: Record<Variant, string> = {
+  primary: colors.onAccent,
+  secondary: colors.text,
+  ghost: colors.text,
+  danger: colors.danger
+};
+
 export function AppButton({ title, onPress, variant = "primary", disabled, loading, icon: Icon }: Props) {
+  const isDisabled = disabled || loading;
+  const fg = fgColor[variant];
+
+  const content = (
+    <View style={styles.inner}>
+      {loading ? (
+        <ActivityIndicator color={fg} />
+      ) : (
+        <>
+          {Icon ? <Icon color={fg} size={18} strokeWidth={2.4} /> : null}
+          <Txt variant="title" color={fg}>
+            {title}
+          </Txt>
+        </>
+      )}
+    </View>
+  );
+
+  if (variant === "primary") {
+    return (
+      <Pressable
+        onPress={onPress}
+        disabled={isDisabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled, busy: loading }}
+        style={({ pressed }) => [styles.shadow, pressed && styles.pressed, isDisabled && styles.disabled]}
+      >
+        <LinearGradient colors={gradients.accent} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>
+          {content}
+        </LinearGradient>
+      </Pressable>
+    );
+  }
+
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled || loading}
+      disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       style={({ pressed }) => [
         styles.button,
         styles[variant],
         pressed && styles.pressed,
-        disabled && styles.disabled
+        isDisabled && styles.disabled
       ]}
     >
-      {loading ? (
-        <ActivityIndicator color={variant === "primary" ? colors.background : colors.text} />
-      ) : (
-        <View style={styles.inner}>
-          {Icon ? <Icon color={variant === "primary" ? colors.text : colors.text} size={18} strokeWidth={2.5} /> : null}
-          <Text style={[styles.text, variant === "primary" && styles.primaryText]}>{title}</Text>
-        </View>
-      )}
+      {content}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 50,
-    borderRadius: radius.pill,
+    minHeight: 52,
+    borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: spacing.md,
-    borderWidth: 1,
-    ...shadows.soft
+    paddingHorizontal: spacing.lg
+  },
+  shadow: {
+    borderRadius: radius.md,
+    ...shadows.accent
   },
   inner: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.sm
-  },
-  primary: {
-    backgroundColor: colors.accent,
-    borderColor: colors.purpleGlow,
-    shadowColor: colors.pink,
-    shadowOpacity: 0.22
+    gap: spacing.xs
   },
   secondary: {
-    backgroundColor: colors.cardElevated,
-    borderColor: colors.borderSoft
+    backgroundColor: colors.surfaceStrong,
+    borderWidth: 1,
+    borderColor: colors.borderStrong
   },
   ghost: {
     backgroundColor: "transparent",
-    borderColor: colors.borderSoft,
-    shadowOpacity: 0
+    borderWidth: 1,
+    borderColor: colors.border
   },
   danger: {
-    backgroundColor: "rgba(255, 107, 138, 0.1)",
-    borderColor: colors.danger,
-    shadowOpacity: 0
+    backgroundColor: colors.dangerSoft,
+    borderWidth: 1,
+    borderColor: colors.danger
   },
   pressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9
+    opacity: 0.85,
+    transform: [{ scale: 0.99 }]
   },
   disabled: {
-    opacity: 0.68
-  },
-  text: {
-    color: colors.text,
-    fontWeight: "800",
-    fontSize: 15
-  },
-  primaryText: {
-    color: colors.text
+    opacity: 0.45
   }
 });

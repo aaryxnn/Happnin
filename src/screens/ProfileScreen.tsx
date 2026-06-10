@@ -1,11 +1,13 @@
-import { Alert, StyleSheet, Switch, Text, View } from "react-native";
 import { LogOut, ShieldCheck } from "lucide-react-native";
+import { Alert, StyleSheet, Switch, View } from "react-native";
 
 import { AppButton } from "../components/AppButton";
 import { Chip } from "../components/Chip";
+import { Badge, Divider, EmptyState, Panel, SectionHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
-import { colors, radius, shadows, spacing } from "../theme";
+import { colors, radius, spacing } from "../theme";
 
 export function ProfileScreen() {
   const { user, clubs, signOut, isDemoMode, updateProfileSettings, interestCategories } = useApp();
@@ -20,71 +22,101 @@ export function ProfileScreen() {
     <Screen>
       <View style={styles.header}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{user.fullName.charAt(0)}</Text>
+          <Txt variant="h1" color={colors.accentText}>
+            {user.fullName.charAt(0).toUpperCase()}
+          </Txt>
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.title}>{user.fullName}</Text>
-          <Text style={styles.email}>{user.email}</Text>
+        <View style={styles.headerText}>
+          <Txt variant="h1" numberOfLines={1}>
+            {user.fullName}
+          </Txt>
+          <Txt variant="caption" color={colors.muted} numberOfLines={1}>
+            {user.email}
+          </Txt>
+          <View style={styles.headerBadges}>
+            <Badge label={user.schoolYear} tone="accent" />
+            {isDemoMode ? <Badge label="Demo" tone="neutral" /> : null}
+          </View>
         </View>
       </View>
 
-      <View style={styles.panel}>
-        <Text style={styles.panelTitle}>Campus profile</Text>
-        <Text style={styles.rowText}>{user.schoolYear}</Text>
-        <Text style={styles.rowText}>
-          Choose whether new RSVPs start visible. You can still change visibility before RSVP'ing to each event.
-        </Text>
+      <Panel style={styles.panel}>
+        <Txt variant="title">Privacy</Txt>
         <View style={styles.settingRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.settingLabel}>Visible RSVP default</Text>
-            <Text style={styles.settingHint}>{user.visibleRsvpsDefault ? "New RSVPs show your profile." : "New RSVPs stay private."}</Text>
+          <View style={styles.settingText}>
+            <Txt variant="bodyStrong">Visible RSVP by default</Txt>
+            <Txt variant="caption" color={colors.muted}>
+              {user.visibleRsvpsDefault ? "New RSVPs show your profile." : "New RSVPs stay private."}
+            </Txt>
           </View>
           <Switch
             value={user.visibleRsvpsDefault}
             onValueChange={(visibleRsvpsDefault) => updateProfileSettings({ visibleRsvpsDefault })}
             thumbColor={colors.text}
-            trackColor={{ false: colors.surfaceSoft, true: colors.accentStrong }}
+            trackColor={{ false: colors.surfaceSoft, true: colors.accent }}
           />
         </View>
-      </View>
+      </Panel>
 
-      <Text style={styles.section}>Your interests</Text>
-      <View style={styles.wrap}>
-        {interestNames.map((interest) => (
-          <Chip key={interest} label={interest} selected />
-        ))}
-      </View>
-
-      <Text style={styles.section}>Club tags</Text>
-      <View style={styles.wrap}>
-        {user.clubTags.map((club) => (
-          <Chip key={club} label={club} selected />
-        ))}
-      </View>
-
-      <Text style={styles.section}>Verified clubs on campus</Text>
-      {clubs.map((club) => (
-        <View key={club.id} style={styles.clubRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.clubName}>{club.name}</Text>
-            <Text style={styles.clubDescription}>{club.description}</Text>
+      <View style={styles.sectionWrap}>
+        <SectionHeader title="Interests" />
+        {interestNames.length === 0 ? (
+          <EmptyState title="No interests yet" copy="Add interests to improve your recommendations." />
+        ) : (
+          <View style={styles.wrap}>
+            {interestNames.map((interest) => (
+              <Chip key={interest} label={interest} selected />
+            ))}
           </View>
-          {club.verified ? <ShieldCheck color={colors.green} size={20} /> : null}
-        </View>
-      ))}
+        )}
+      </View>
 
-      {isDemoMode ? <Text style={styles.demo}>Demo mode is active until Supabase env vars are added.</Text> : null}
-      <AppButton
-        title="Log out"
-        variant="secondary"
-        icon={LogOut}
-        onPress={() => {
-          Alert.alert("Log out?", "You can come back with your school email.", [
-            { text: "Cancel", style: "cancel" },
-            { text: "Log out", style: "destructive", onPress: signOut }
-          ]);
-        }}
-      />
+      <View style={styles.sectionWrap}>
+        <SectionHeader title="Clubs you follow" />
+        {user.clubTags.length === 0 ? (
+          <EmptyState title="No clubs yet" copy="Follow clubs to make your feed more relevant." />
+        ) : (
+          <View style={styles.wrap}>
+            {user.clubTags.map((club) => (
+              <Chip key={club} label={club} selected />
+            ))}
+          </View>
+        )}
+      </View>
+
+      <View style={styles.sectionWrap}>
+        <SectionHeader title="Verified clubs on campus" />
+        <Panel style={styles.clubsPanel}>
+          {clubs.map((club, index) => (
+            <View key={club.id}>
+              {index > 0 ? <Divider style={styles.clubDivider} /> : null}
+              <View style={styles.clubRow}>
+                <View style={styles.clubText}>
+                  <Txt variant="bodyStrong">{club.name}</Txt>
+                  <Txt variant="caption" color={colors.muted} numberOfLines={2}>
+                    {club.description}
+                  </Txt>
+                </View>
+                {club.verified ? <ShieldCheck color={colors.accent} size={18} /> : null}
+              </View>
+            </View>
+          ))}
+        </Panel>
+      </View>
+
+      <View style={styles.logout}>
+        <AppButton
+          title="Log out"
+          variant="secondary"
+          icon={LogOut}
+          onPress={() => {
+            Alert.alert("Log out?", "You can come back with your school email.", [
+              { text: "Cancel", style: "cancel" },
+              { text: "Log out", style: "destructive", onPress: signOut }
+            ]);
+          }}
+        />
+      </View>
     </Screen>
   );
 }
@@ -99,95 +131,58 @@ const styles = StyleSheet.create({
   avatar: {
     width: 72,
     height: 72,
-    borderRadius: 36,
-    backgroundColor: colors.accentStrong,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accentSoft,
     alignItems: "center",
-    justifyContent: "center",
-    ...shadows.glow
+    justifyContent: "center"
   },
-  avatarText: {
-    color: colors.background,
-    fontSize: 30,
-    fontWeight: "900"
+  headerText: {
+    flex: 1,
+    gap: spacing.xxs
   },
-  title: {
-    color: colors.text,
-    fontSize: 30,
-    fontWeight: "900"
-  },
-  email: {
-    color: colors.muted,
-    fontWeight: "700"
+  headerBadges: {
+    flexDirection: "row",
+    gap: spacing.xs,
+    marginTop: spacing.xxs
   },
   panel: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
-    gap: spacing.sm,
-    ...shadows.soft
-  },
-  panelTitle: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 18
+    gap: spacing.sm
   },
   settingRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: spacing.md,
-    paddingTop: spacing.sm
+    gap: spacing.md
   },
-  rowText: {
-    color: colors.muted,
-    lineHeight: 21
+  settingText: {
+    flex: 1,
+    gap: spacing.xxs
   },
-  settingLabel: {
-    color: colors.text,
-    fontWeight: "900"
-  },
-  settingHint: {
-    color: colors.muted,
-    marginTop: spacing.xs,
-    lineHeight: 19
-  },
-  section: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "900",
-    marginTop: spacing.lg,
-    marginBottom: spacing.sm
+  sectionWrap: {
+    marginTop: spacing.lg
   },
   wrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: spacing.sm
+    gap: spacing.xs
+  },
+  clubsPanel: {
+    gap: 0
   },
   clubRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    backgroundColor: colors.card,
-    marginBottom: spacing.sm
+    paddingVertical: spacing.sm
   },
-  clubName: {
-    color: colors.text,
-    fontWeight: "900"
+  clubDivider: {
+    marginVertical: spacing.xxs
   },
-  clubDescription: {
-    color: colors.muted,
-    marginTop: spacing.xs,
-    lineHeight: 20
+  clubText: {
+    flex: 1,
+    gap: 2
   },
-  demo: {
-    color: colors.amber,
-    fontWeight: "800",
-    marginVertical: spacing.md
+  logout: {
+    marginTop: spacing.xl
   }
 });

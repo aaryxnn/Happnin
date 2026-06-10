@@ -1,13 +1,14 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { Search, Sparkles } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 import { Chip } from "../components/Chip";
 import { EventCard } from "../components/EventCard";
+import { Badge, EmptyState, Panel, SectionHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
-import { TextField } from "../components/TextField";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
-import { colors, radius, shadows, spacing } from "../theme";
+import { colors, radius, spacing } from "../theme";
 
 type DateFilter = "All" | "Tonight" | "Tomorrow" | "Weekend" | "Trending";
 const dateFilters: DateFilter[] = ["All", "Tonight", "Tomorrow", "Weekend", "Trending"];
@@ -35,44 +36,78 @@ export function FeedScreen() {
       }
       return new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime();
     });
-  const totalEvents = publishedEvents.length;
+
+  const firstName = user?.fullName?.split(" ")[0] ?? "there";
+  const totalLive = events.filter((event) => event.status === "published").length;
   const nextEvent = publishedEvents[0];
 
   return (
     <Screen>
-      <LinearGradient colors={["#3b0764", "#1b0733", "#08040f"]} style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={styles.livePill}>
-            <Text style={styles.liveDot}>●</Text>
-            <Text style={styles.eyebrow}>{campus.shortName}</Text>
-          </View>
-          <Text style={styles.count}>{totalEvents} live</Text>
+      <View style={styles.topBar}>
+        <View>
+          <Txt variant="overline" color={colors.faint}>
+            {campus.shortName.toUpperCase()}
+          </Txt>
+          <Txt variant="h1">Hey {firstName}</Txt>
         </View>
-        <Text style={styles.title}>What's happnin?</Text>
-        <View style={styles.statRow}>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{events.filter((event) => event.status === "published").length}</Text>
-            <Text style={styles.statLabel}>campus drops</Text>
-          </View>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{nextEvent ? formatSoon(nextEvent.startsAt) : "--"}</Text>
-            <Text style={styles.statLabel}>next up</Text>
-          </View>
-        </View>
-      </LinearGradient>
-
-      <View style={styles.searchWrap}>
-        <TextField label="Search events" value={search} onChangeText={setSearch} placeholder="DJ night, Campus Center, clubs..." />
+        <Badge label="Live" tone="hot" icon={<View style={styles.dot} />} />
       </View>
 
-      <View style={styles.filters}>
+      <Panel style={styles.hero} elevated>
+        <View style={styles.heroRow}>
+          <Sparkles color={colors.accentText} size={18} />
+          <Txt variant="label" color={colors.accentText}>
+            What's happening
+          </Txt>
+        </View>
+        <View style={styles.statRow}>
+          <View style={styles.stat}>
+            <Txt variant="display">{totalLive}</Txt>
+            <Txt variant="caption" color={colors.muted}>
+              live events
+            </Txt>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.stat}>
+            <Txt variant="display">{nextEvent ? formatSoon(nextEvent.startsAt) : "--"}</Txt>
+            <Txt variant="caption" color={colors.muted}>
+              until next
+            </Txt>
+          </View>
+        </View>
+      </Panel>
+
+      <View style={styles.searchBar}>
+        <Search color={colors.faint} size={18} />
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search events, venues, clubs"
+          placeholderTextColor={colors.faint}
+          style={styles.searchInput}
+          returnKeyType="search"
+        />
+      </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filters}
+        style={styles.filterScroll}
+      >
         {dateFilters.map((item) => (
           <Chip key={item} label={item} selected={dateFilter === item} onPress={() => setDateFilter(item)} />
         ))}
-      </View>
+      </ScrollView>
+
+      <SectionHeader title={dateFilter === "All" ? "Upcoming" : dateFilter} />
 
       {publishedEvents.length === 0 ? (
-        <Text style={styles.empty}>No events match this filter yet. Try All or clear your search.</Text>
+        <EmptyState
+          title="Nothing here yet"
+          copy="Try a different filter or clear your search. New events show up as organizers post them."
+          icon={<Sparkles color={colors.accentText} size={22} />}
+        />
       ) : (
         publishedEvents.map((event) => (
           <EventCard key={event.id} event={event} isRsvpd={rsvps.some((rsvp) => rsvp.eventId === event.id)} />
@@ -107,98 +142,76 @@ function matchesDateFilter(startsAt: string, filter: DateFilter) {
   return eventDate >= now && [5, 6, 0].includes(day);
 }
 
-const styles = StyleSheet.create({
-  header: {
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
-  },
-  headerTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 0
-  },
-  livePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-    backgroundColor: "rgba(251, 247, 255, 0.08)",
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs
-  },
-  liveDot: {
-    color: colors.lime,
-    fontSize: 10
-  },
-  eyebrow: {
-    color: colors.text,
-    fontWeight: "900"
-  },
-  count: {
-    color: colors.muted,
-    fontWeight: "900",
-    fontSize: 12
-  },
-  title: {
-    color: colors.text,
-    fontSize: 34,
-    lineHeight: 38,
-    fontWeight: "900"
-  },
-  statRow: {
-    flexDirection: "row",
-    gap: spacing.sm
-  },
-  stat: {
-    flex: 1,
-    backgroundColor: "rgba(5, 3, 10, 0.44)",
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.sm
-  },
-  statValue: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 18
-  },
-  statLabel: {
-    color: colors.muted,
-    fontWeight: "800",
-    fontSize: 12,
-    marginTop: spacing.xs
-  },
-  searchWrap: {
-    marginBottom: spacing.lg
-  },
-  filters: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    marginBottom: spacing.md
-  },
-  empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md,
-    lineHeight: 22
-  }
-});
-
 function formatSoon(startsAt: string) {
   const start = new Date(startsAt).getTime();
   const diffHours = Math.max(0, Math.round((start - Date.now()) / (60 * 60 * 1000)));
   if (diffHours < 24) return `${diffHours}h`;
   return `${Math.round(diffHours / 24)}d`;
 }
+
+const styles = StyleSheet.create({
+  topBar: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    marginBottom: spacing.md
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: radius.pill,
+    backgroundColor: colors.hot
+  },
+  hero: {
+    marginBottom: spacing.md,
+    gap: spacing.md,
+    overflow: "hidden"
+  },
+  heroRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs
+  },
+  statRow: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  stat: {
+    flex: 1,
+    gap: spacing.xxs
+  },
+  statDivider: {
+    width: 1,
+    alignSelf: "stretch",
+    backgroundColor: colors.borderSoft,
+    marginHorizontal: spacing.md
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.md,
+    minHeight: 50,
+    marginBottom: spacing.md
+  },
+  searchInput: {
+    flex: 1,
+    color: colors.text,
+    fontFamily: "PlusJakartaSans_500Medium",
+    fontSize: 15
+  },
+  filterScroll: {
+    marginHorizontal: -spacing.md,
+    marginBottom: spacing.xs
+  },
+  filters: {
+    flexDirection: "row",
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.xs
+  }
+});

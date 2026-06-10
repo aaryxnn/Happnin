@@ -24,7 +24,8 @@
         {
           "photosPermission": "Happnin needs access to your photo gallery so organizers can choose event poster images."
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

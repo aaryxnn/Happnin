@@ -1,22 +1,31 @@
 import { PropsWithChildren } from "react";
-import { ScrollView, StyleSheet, ViewStyle } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet, View, ViewStyle } from "react-native";
+import { Edge, SafeAreaView } from "react-native-safe-area-context";
 
 import { colors, spacing } from "../theme";
 
 type Props = PropsWithChildren<{
   scroll?: boolean;
   style?: ViewStyle;
+  edges?: Edge[];
 }>;
 
-export function Screen({ children, scroll = true, style }: Props) {
+export function Screen({ children, scroll = true, style, edges = ["top"] }: Props) {
   if (!scroll) {
-    return <SafeAreaView style={[styles.safe, style]}>{children}</SafeAreaView>;
+    return (
+      <SafeAreaView style={styles.safe} edges={edges}>
+        <View style={[styles.flex, style]}>{children}</View>
+      </SafeAreaView>
+    );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={[styles.content, style]} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safe} edges={edges}>
+      <ScrollView
+        contentContainerStyle={[styles.content, style]}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {children}
       </ScrollView>
     </SafeAreaView>
@@ -28,8 +37,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background
   },
+  flex: {
+    flex: 1
+  },
   content: {
-    padding: spacing.md,
-    paddingBottom: 120
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: 128
   }
 });

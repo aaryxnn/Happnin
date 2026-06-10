@@ -1,19 +1,42 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Music, Pizza, Trophy, UsersRound } from "lucide-react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { ComponentType, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import {
+  GraduationCap,
+  LucideProps,
+  Moon,
+  Music,
+  PartyPopper,
+  Trophy,
+  UsersRound,
+  UtensilsCrossed
+} from "lucide-react-native";
 
 import { AppButton } from "../components/AppButton";
 import { EventCard } from "../components/EventCard";
+import { EmptyState, PageHeader, SectionHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
-import { categories, colors, radius, shadows, spacing } from "../theme";
+import { categories, colors, radius, spacing } from "../theme";
 import { EventCategory } from "../types";
-import { useState } from "react";
+
+const categoryIcons: Record<string, ComponentType<LucideProps>> = {
+  Parties: PartyPopper,
+  Clubs: UsersRound,
+  Campus: GraduationCap,
+  Sports: Trophy,
+  Music: Music,
+  Food: UtensilsCrossed,
+  Nightlife: Moon
+};
 
 export function DiscoverScreen() {
   const { events, rsvps } = useApp();
   const [selectedCategory, setSelectedCategory] = useState<EventCategory | null>(null);
-  const trending = [...events].sort((a, b) => b.rsvpCount - a.rsvpCount).slice(0, 2);
+  const trending = [...events]
+    .filter((event) => event.status === "published")
+    .sort((a, b) => b.rsvpCount - a.rsvpCount)
+    .slice(0, 2);
   const categoryEvents = selectedCategory
     ? events
         .filter((event) => event.status === "published")
@@ -24,13 +47,12 @@ export function DiscoverScreen() {
   if (selectedCategory) {
     return (
       <Screen>
-        <Text style={styles.title}>{selectedCategory}</Text>
-        <Text style={styles.copy}>{categoryEvents.length} live events in this scene.</Text>
+        <PageHeader title={selectedCategory} copy={`${categoryEvents.length} upcoming in this category.`} />
         <View style={styles.backButton}>
-          <AppButton title="Back to scenes" variant="secondary" onPress={() => setSelectedCategory(null)} />
+          <AppButton title="All categories" variant="secondary" onPress={() => setSelectedCategory(null)} />
         </View>
         {categoryEvents.length === 0 ? (
-          <Text style={styles.empty}>No {selectedCategory.toLowerCase()} events yet.</Text>
+          <EmptyState title={`No ${selectedCategory.toLowerCase()} events yet`} copy="Check another category or come back later." />
         ) : (
           categoryEvents.map((event) => (
             <EventCard key={event.id} event={event} isRsvpd={rsvps.some((rsvp) => rsvp.eventId === event.id)} />
@@ -42,44 +64,46 @@ export function DiscoverScreen() {
 
   return (
     <Screen>
-      <Text style={styles.title}>Discover</Text>
-      <Text style={styles.copy}>Browse by scene, then jump into the events with the most campus energy.</Text>
+      <PageHeader title="Discover" copy="Browse by category or see what's trending across campus." />
 
       <View style={styles.grid}>
-        {categories.map((category, index) => (
-          <Pressable key={category} style={({ pressed }) => [styles.tile, pressed && styles.tilePressed]} onPress={() => setSelectedCategory(category)}>
-            <LinearGradient colors={["rgba(168, 85, 247, 0.2)", "rgba(18, 9, 31, 0.92)"]} style={styles.tileFill} />
-            {index % 4 === 0 ? <UsersRound color={colors.accent} size={22} /> : null}
-            {index % 4 === 1 ? <Music color={colors.pink} size={22} /> : null}
-            {index % 4 === 2 ? <Trophy color={colors.lime} size={22} /> : null}
-            {index % 4 === 3 ? <Pizza color={colors.amber} size={22} /> : null}
-            <Text style={styles.tileText}>{category}</Text>
-            <Text style={styles.tileCount}>{events.filter((event) => event.category === category).length} live</Text>
-          </Pressable>
-        ))}
+        {categories.map((category) => {
+          const Icon = categoryIcons[category] ?? UsersRound;
+          const count = events.filter((event) => event.status === "published" && event.category === category).length;
+          return (
+            <Pressable
+              key={category}
+              style={({ pressed }) => [styles.tile, pressed && styles.tilePressed]}
+              onPress={() => setSelectedCategory(category)}
+              accessibilityRole="button"
+            >
+              <View style={styles.iconWrap}>
+                <Icon color={colors.accentText} size={20} strokeWidth={2.2} />
+              </View>
+              <View>
+                <Txt variant="title">{category}</Txt>
+                <Txt variant="caption" color={colors.faint}>
+                  {count} {count === 1 ? "event" : "events"}
+                </Txt>
+              </View>
+            </Pressable>
+          );
+        })}
       </View>
 
-      <Text style={styles.section}>Trending now</Text>
-      {trending.map((event) => (
-        <EventCard key={event.id} event={event} isRsvpd={rsvps.some((rsvp) => rsvp.eventId === event.id)} />
-      ))}
+      <SectionHeader title="Trending now" />
+      {trending.length === 0 ? (
+        <EmptyState title="Nothing trending yet" copy="Events gain momentum as students RSVP." />
+      ) : (
+        trending.map((event) => (
+          <EventCard key={event.id} event={event} isRsvpd={rsvps.some((rsvp) => rsvp.eventId === event.id)} />
+        ))
+      )}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 36,
-    fontWeight: "900",
-    marginBottom: spacing.sm
-  },
-  copy: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 23,
-    marginBottom: spacing.md
-  },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -87,53 +111,28 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg
   },
   tile: {
-    width: "48%",
-    minHeight: 128,
-    borderRadius: radius.md,
+    width: "48.5%",
+    minHeight: 120,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.border,
     backgroundColor: colors.card,
     padding: spacing.md,
-    justifyContent: "space-between",
-    overflow: "hidden",
-    ...shadows.soft
-  },
-  tileFill: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
+    justifyContent: "space-between"
   },
   tilePressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.82
+    opacity: 0.85,
+    transform: [{ scale: 0.99 }]
   },
-  tileText: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 18
-  },
-  tileCount: {
-    color: colors.muted,
-    fontWeight: "800"
-  },
-  section: {
-    color: colors.text,
-    fontSize: 22,
-    fontWeight: "900",
-    marginBottom: spacing.md
+  iconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: colors.accentSoft,
+    alignItems: "center",
+    justifyContent: "center"
   },
   backButton: {
     marginBottom: spacing.md
-  },
-  empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md,
-    lineHeight: 22
   }
 });

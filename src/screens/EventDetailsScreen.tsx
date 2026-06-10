@@ -1,15 +1,16 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { Alert, Image, Pressable, Share, StyleSheet, Switch, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Calendar, Flag, LucideProps, MapPin, Send, ShieldCheck, Users } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { ComponentType } from "react";
+import { ComponentType, useEffect, useState } from "react";
+import { Alert, ImageBackground, Pressable, Share, StyleSheet, Switch, View } from "react-native";
 
 import { AppButton } from "../components/AppButton";
+import { Badge, Divider, EmptyState, Panel } from "../components/PageElements";
 import { Screen } from "../components/Screen";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
 import { RootStackParamList } from "../navigation/types";
-import { colors, radius, shadows, spacing } from "../theme";
+import { colors, gradients, radius, spacing } from "../theme";
 
 export function EventDetailsScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "EventDetails">>();
@@ -26,7 +27,7 @@ export function EventDetailsScreen() {
   if (!event) {
     return (
       <Screen>
-        <Text style={styles.title}>Event not found</Text>
+        <EmptyState title="Event not found" copy="This event may have been removed." />
       </Screen>
     );
   }
@@ -49,218 +50,213 @@ export function EventDetailsScreen() {
   }
 
   return (
-    <Screen>
-      <View style={styles.hero}>
-        <Image source={{ uri: event.imageUrl }} style={styles.image} />
-        <LinearGradient colors={["rgba(5, 3, 10, 0)", "rgba(5, 3, 10, 0.82)"]} style={styles.imageFade} />
-      </View>
-      <View style={styles.categoryRow}>
-        <Text style={styles.category}>{event.category}</Text>
-        {event.organizerVerified ? (
-          <View style={styles.verified}>
-            <ShieldCheck color={colors.green} size={16} />
-            <Text style={styles.verifiedText}>Verified organizer</Text>
-          </View>
-        ) : null}
-      </View>
-      <Text style={styles.title}>{event.title}</Text>
-      <Text style={styles.description}>{event.description}</Text>
-
-      <View style={styles.metaBox}>
-        <Meta icon={Calendar} text={`${start.toLocaleDateString()} at ${start.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`} />
-        <Meta icon={MapPin} text={`${event.venueName} - ${event.address}`} />
-        <Meta icon={Users} text={`${event.rsvpCount} students interested`} />
-      </View>
-
-      <View style={styles.rsvpPanel}>
-        <View style={styles.rsvpTop}>
-          <View>
-            <Text style={styles.panelTitle}>Social RSVP</Text>
-            <Text style={styles.panelCopy}>Show your profile so classmates know you are going.</Text>
-          </View>
-          <Switch
-            value={visibleRsvp}
-            disabled={Boolean(rsvp)}
-            onValueChange={setVisibleRsvp}
-            thumbColor={colors.text}
-            trackColor={{ false: colors.surfaceSoft, true: colors.accentStrong }}
-          />
+    <Screen style={styles.screen}>
+      <ImageBackground source={{ uri: event.imageUrl }} style={styles.hero} imageStyle={styles.heroImage}>
+        <LinearGradient colors={gradients.scrim} style={styles.scrim} />
+        <View style={styles.heroTop}>
+          <Badge label={event.category} tone="accent" />
+          {event.organizerVerified ? (
+            <Badge label="Verified" tone="success" icon={<ShieldCheck color={colors.success} size={12} />} />
+          ) : null}
         </View>
-        <AppButton
-          title={rsvp ? "Cancel RSVP" : "RSVP / I'm interested"}
-          onPress={() => toggleRsvp(event.id, visibleRsvp)}
-          variant={rsvp ? "secondary" : "primary"}
-        />
-        <AppButton title="Share event" onPress={shareEvent} variant="ghost" icon={Send} />
-      </View>
+        <View style={styles.heroBottom}>
+          <Txt variant="overline" color={colors.accentText}>
+            {start.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toUpperCase()}
+          </Txt>
+          <Txt variant="display">{event.title}</Txt>
+          <Txt variant="bodyStrong" color={colors.muted}>
+            by {event.organizerName}
+          </Txt>
+        </View>
+      </ImageBackground>
 
-      <View style={styles.attendees}>
-        <Text style={styles.panelTitle}>Who's visibly going</Text>
-        {event.visibleAttendees.length === 0 ? (
-          <Text style={styles.panelCopy}>No visible RSVPs yet. Counts still help keep the feed active.</Text>
-        ) : (
-          event.visibleAttendees.map((attendee) => (
-            <View key={attendee.userId} style={styles.attendee}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{attendee.fullName.charAt(0)}</Text>
-              </View>
-              <Text style={styles.attendeeName}>{attendee.fullName}</Text>
+      <View style={styles.content}>
+        <Txt variant="body" color={colors.muted} style={styles.description}>
+          {event.description}
+        </Txt>
+
+        <Panel style={styles.metaBox}>
+          <Meta
+            icon={Calendar}
+            label="When"
+            value={`${start.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${start.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`}
+          />
+          <Divider />
+          <Meta icon={MapPin} label="Where" value={`${event.venueName}\n${event.address}`} />
+          <Divider />
+          <Meta icon={Users} label="Interest" value={`${event.rsvpCount} students interested`} />
+        </Panel>
+
+        <Panel style={styles.rsvpPanel}>
+          <View style={styles.rsvpTop}>
+            <View style={styles.rsvpText}>
+              <Txt variant="title">Show I'm going</Txt>
+              <Txt variant="caption" color={colors.muted}>
+                Make your profile visible on this event.
+              </Txt>
             </View>
-          ))
-        )}
-      </View>
+            <Switch
+              value={visibleRsvp}
+              disabled={Boolean(rsvp)}
+              onValueChange={setVisibleRsvp}
+              thumbColor={colors.text}
+              trackColor={{ false: colors.surfaceSoft, true: colors.accent }}
+            />
+          </View>
+          <AppButton
+            title={rsvp ? "Cancel RSVP" : "RSVP — I'm interested"}
+            onPress={() => toggleRsvp(event.id, visibleRsvp)}
+            variant={rsvp ? "secondary" : "primary"}
+          />
+          <AppButton title="Share event" onPress={shareEvent} variant="ghost" icon={Send} />
+        </Panel>
 
-      <Pressable onPress={report} style={styles.report}>
-        <Flag color={colors.danger} size={16} />
-        <Text style={styles.reportText}>Report this event</Text>
-      </Pressable>
+        <Txt variant="h3" style={styles.sectionTitle}>
+          Who's going
+        </Txt>
+        {event.visibleAttendees.length === 0 ? (
+          <EmptyState title="No visible RSVPs yet" copy="Private RSVPs still count toward event interest." />
+        ) : (
+          <Panel style={styles.attendees}>
+            {event.visibleAttendees.map((attendee, index) => (
+              <View key={attendee.userId}>
+                {index > 0 ? <Divider style={styles.attendeeDivider} /> : null}
+                <View style={styles.attendee}>
+                  <View style={styles.avatar}>
+                    <Txt variant="label" color={colors.accentText}>
+                      {attendee.fullName.charAt(0).toUpperCase()}
+                    </Txt>
+                  </View>
+                  <Txt variant="bodyStrong">{attendee.fullName}</Txt>
+                </View>
+              </View>
+            ))}
+          </Panel>
+        )}
+
+        <Pressable onPress={report} style={styles.report} accessibilityRole="button">
+          <Flag color={colors.faint} size={15} />
+          <Txt variant="caption" color={colors.faint}>
+            Report this event
+          </Txt>
+        </Pressable>
+      </View>
     </Screen>
   );
 }
 
-function Meta({ icon: Icon, text }: { icon: ComponentType<LucideProps>; text: string }) {
+function Meta({ icon: Icon, label, value }: { icon: ComponentType<LucideProps>; label: string; value: string }) {
   return (
     <View style={styles.metaRow}>
-      <Icon color={colors.accent} size={18} />
-      <Text style={styles.metaText}>{text}</Text>
+      <View style={styles.metaIcon}>
+        <Icon color={colors.accentText} size={18} strokeWidth={2.2} />
+      </View>
+      <View style={styles.metaText}>
+        <Txt variant="overline" color={colors.faint}>
+          {label.toUpperCase()}
+        </Txt>
+        <Txt variant="bodyStrong">{value}</Txt>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    width: "100%",
-    height: 260,
-    borderRadius: radius.lg
+  screen: {
+    paddingHorizontal: 0,
+    paddingTop: 0
   },
   hero: {
-    marginBottom: spacing.md,
-    borderRadius: radius.lg,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
+    height: 340,
+    justifyContent: "space-between",
+    padding: spacing.lg
   },
-  imageFade: {
+  heroImage: {
+    backgroundColor: colors.surfaceStrong
+  },
+  scrim: {
     position: "absolute",
+    top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    height: 120
+    bottom: 0
   },
-  categoryRow: {
+  heroTop: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    gap: spacing.sm,
-    marginBottom: spacing.sm
+    alignItems: "flex-start"
   },
-  category: {
-    color: colors.accent,
-    fontWeight: "900"
-  },
-  verified: {
-    flexDirection: "row",
-    alignItems: "center",
+  heroBottom: {
     gap: spacing.xs
   },
-  verifiedText: {
-    color: colors.green,
-    fontWeight: "900",
-    fontSize: 12
-  },
-  title: {
-    color: colors.text,
-    fontSize: 34,
-    lineHeight: 39,
-    fontWeight: "900",
-    marginBottom: spacing.sm
+  content: {
+    padding: spacing.md,
+    gap: spacing.md
   },
   description: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: spacing.md
+    marginTop: spacing.xxs
   },
   metaBox: {
-    gap: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    ...shadows.soft
+    gap: spacing.md
   },
   metaRow: {
     flexDirection: "row",
     gap: spacing.sm,
     alignItems: "center"
   },
+  metaIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: radius.sm,
+    backgroundColor: colors.accentSoft,
+    alignItems: "center",
+    justifyContent: "center"
+  },
   metaText: {
-    color: colors.text,
-    fontWeight: "700",
-    flex: 1
+    flex: 1,
+    gap: 2
   },
   rsvpPanel: {
-    gap: spacing.md,
-    backgroundColor: colors.surfaceStrong,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
+    gap: spacing.md
   },
   rsvpTop: {
     flexDirection: "row",
     gap: spacing.md,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    alignItems: "center"
   },
-  panelTitle: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 17
+  rsvpText: {
+    flex: 1,
+    gap: spacing.xxs
   },
-  panelCopy: {
-    color: colors.muted,
-    lineHeight: 20,
+  sectionTitle: {
     marginTop: spacing.xs
   },
   attendees: {
-    gap: spacing.sm,
-    marginBottom: spacing.lg
+    gap: 0
   },
   attendee: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.sm
+    gap: spacing.sm,
+    paddingVertical: spacing.xs
+  },
+  attendeeDivider: {
+    marginVertical: spacing.xxs
   },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.accent,
+    width: 38,
+    height: 38,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accentSoft,
     alignItems: "center",
     justifyContent: "center"
-  },
-  avatarText: {
-    color: colors.text,
-    fontWeight: "900"
-  },
-  attendeeName: {
-    color: colors.text,
-    fontWeight: "800"
   },
   report: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: spacing.sm,
-    padding: spacing.md
-  },
-  reportText: {
-    color: colors.danger,
-    fontWeight: "800"
+    gap: spacing.xs,
+    paddingVertical: spacing.md
   }
 });

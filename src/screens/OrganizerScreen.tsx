@@ -1,16 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Alert, StyleSheet, Text, View } from "react-native";
 import { CalendarPlus, ShieldAlert, ShieldCheck } from "lucide-react-native";
+import { useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { AppButton } from "../components/AppButton";
+import { Badge, EmptyState, PageHeader, Panel, SectionHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
 import { TextField } from "../components/TextField";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
 import { isDevAdminFlowEnabled } from "../lib/devAdmin";
 import { RootStackParamList } from "../navigation/types";
-import { colors, radius, shadows, spacing } from "../theme";
-import { useState } from "react";
+import { colors, radius, spacing } from "../theme";
 
 export function OrganizerScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -46,16 +48,26 @@ export function OrganizerScreen() {
 
   return (
     <Screen>
-      <Text style={styles.title}>Organizer</Text>
-      <Text style={styles.copy}>Clubs and trusted students can publish public events after verification.</Text>
+      <PageHeader title="Organizer" copy="Verified clubs and trusted students can publish events to the campus feed." />
 
       {myOrganizer ? (
-        <View style={styles.panel}>
+        <Panel style={styles.panel} elevated>
           <View style={styles.statusRow}>
-            {myOrganizer.verified ? <ShieldCheck color={colors.green} size={22} /> : <ShieldAlert color={colors.amber} size={22} />}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.panelTitle}>{myOrganizer.displayName}</Text>
-              <Text style={styles.status}>{myOrganizer.verified ? "Verified organizer" : `Status: ${myOrganizer.status}`}</Text>
+            <View style={styles.statusIcon}>
+              {myOrganizer.verified ? (
+                <ShieldCheck color={colors.success} size={22} />
+              ) : (
+                <ShieldAlert color={colors.warning} size={22} />
+              )}
+            </View>
+            <View style={styles.statusText}>
+              <Txt variant="h3">{myOrganizer.displayName}</Txt>
+              <View style={styles.badgeRow}>
+                <Badge
+                  label={myOrganizer.verified ? "Verified" : myOrganizer.status}
+                  tone={myOrganizer.verified ? "success" : "accent"}
+                />
+              </View>
             </View>
           </View>
           <AppButton
@@ -67,93 +79,73 @@ export function OrganizerScreen() {
           {canUseDevAdmin ? (
             <AppButton title="Approve in dev" icon={ShieldCheck} variant="secondary" onPress={approveInDev} />
           ) : null}
-        </View>
+        </Panel>
       ) : (
-        <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Request organizer verification</Text>
-          <Text style={styles.status}>Use a club Instagram, website, Linktree, or officer contact as proof.</Text>
-          <TextField label="Organizer or club name" value={displayName} onChangeText={setDisplayName} autoCapitalize="words" />
-          <TextField label="Proof link" value={proofUrl} onChangeText={setProofUrl} placeholder="https://instagram.com/club" />
+        <Panel style={styles.panel}>
+          <Txt variant="h3">Request verification</Txt>
+          <Txt variant="caption" color={colors.muted}>
+            Use a club Instagram, website, Linktree, or officer contact as proof.
+          </Txt>
+          <TextField label="Organizer or club name" value={displayName} onChangeText={setDisplayName} autoCapitalize="words" placeholder="UMass Ski Club" />
+          <TextField label="Proof link" value={proofUrl} onChangeText={setProofUrl} placeholder="https://instagram.com/club" keyboardType="url" />
           <AppButton title="Submit for review" onPress={requestVerification} />
-        </View>
+        </Panel>
       )}
 
-      <Text style={styles.section}>Your events</Text>
-      {myEvents.length === 0 ? (
-        <Text style={styles.empty}>No organizer events yet.</Text>
-      ) : (
-        myEvents.map((event) => (
-          <View key={event.id} style={styles.eventRow}>
-            <Text style={styles.eventTitle}>{event.title}</Text>
-            <Text style={styles.status}>{event.status}</Text>
-          </View>
-        ))
-      )}
+      <View style={styles.sectionWrap}>
+        <SectionHeader title="Your events" />
+        {myEvents.length === 0 ? (
+          <EmptyState title="No events yet" copy="Once you're verified, events you create show up here." />
+        ) : (
+          myEvents.map((event) => (
+            <Panel key={event.id} style={styles.eventRow}>
+              <Txt variant="title" numberOfLines={1} style={styles.eventTitle}>
+                {event.title}
+              </Txt>
+              <Badge label={event.status} tone={event.status === "published" ? "success" : "neutral"} />
+            </Panel>
+          ))
+        )}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 36,
-    fontWeight: "900",
-    marginBottom: spacing.sm
-  },
-  copy: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 23,
-    marginBottom: spacing.md
-  },
   panel: {
-    gap: spacing.md,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
-    ...shadows.soft
+    gap: spacing.md
   },
   statusRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md
+    gap: spacing.sm
   },
-  panelTitle: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 18
+  statusIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceStrong,
+    alignItems: "center",
+    justifyContent: "center"
   },
-  status: {
-    color: colors.muted,
-    marginTop: spacing.xs
+  statusText: {
+    flex: 1,
+    gap: spacing.xs
   },
-  section: {
-    color: colors.text,
-    fontSize: 20,
-    fontWeight: "900",
-    marginTop: spacing.lg,
-    marginBottom: spacing.sm
+  badgeRow: {
+    flexDirection: "row"
   },
-  empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md
+  sectionWrap: {
+    marginTop: spacing.lg
   },
   eventRow: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.sm,
     marginBottom: spacing.sm
   },
   eventTitle: {
-    color: colors.text,
-    fontWeight: "900"
+    flex: 1
   }
 });

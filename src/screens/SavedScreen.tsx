@@ -1,9 +1,10 @@
-import { StyleSheet, Text } from "react-native";
+import { CalendarHeart } from "lucide-react-native";
 
 import { EventCard } from "../components/EventCard";
+import { EmptyState, PageHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
 import { useApp } from "../context/AppContext";
-import { colors, radius, spacing } from "../theme";
+import { colors } from "../theme";
 
 export function SavedScreen() {
   const { events, rsvps } = useApp();
@@ -11,37 +12,19 @@ export function SavedScreen() {
 
   return (
     <Screen>
-      <Text style={styles.title}>Your RSVPs</Text>
-      <Text style={styles.copy}>Events you are interested in, with reminders scheduled when possible.</Text>
+      <PageHeader
+        title="Your plans"
+        copy={savedEvents.length > 0 ? `${savedEvents.length} event${savedEvents.length === 1 ? "" : "s"} on your list.` : "Events you RSVP to live here."}
+      />
       {savedEvents.length === 0 ? (
-        <Text style={styles.empty}>No RSVPs yet. Find one event that feels worth texting the group chat about.</Text>
+        <EmptyState
+          title="No plans yet"
+          copy="RSVP to an event and it'll show up here with a reminder."
+          icon={<CalendarHeart color={colors.accentText} size={22} />}
+        />
       ) : (
         savedEvents.map((event) => <EventCard key={event.id} event={event} isRsvpd />)
       )}
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 36,
-    fontWeight: "900",
-    marginBottom: spacing.sm
-  },
-  copy: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 23,
-    marginBottom: spacing.md
-  },
-  empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
-    lineHeight: 22
-  }
-});

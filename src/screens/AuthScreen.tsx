@@ -1,13 +1,24 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Mail } from "lucide-react-native";
+import { useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View
+} from "react-native";
 
 import { AppButton } from "../components/AppButton";
+import { Badge } from "../components/PageElements";
 import { TextField } from "../components/TextField";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
 import { formatAllowedDomains } from "../lib/domain";
-import { colors, radius, shadows, spacing } from "../theme";
+import { colors, gradients, radius, spacing } from "../theme";
 
 export function AuthScreen() {
   const { signIn, signUp, campus, isDemoMode } = useApp();
@@ -37,7 +48,7 @@ export function AuthScreen() {
   }
 
   return (
-    <LinearGradient colors={["#05030a", "#160727", "#3b0764", "#08040f"]} style={styles.container}>
+    <LinearGradient colors={gradients.hero} style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboard} keyboardVerticalOffset={12}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <ScrollView
@@ -46,37 +57,65 @@ export function AuthScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.hero}>
-              <View style={styles.logoPill}>
-                <Text style={styles.logo}>Happnin</Text>
+              <View style={styles.brandRow}>
+                <View style={styles.logoMark}>
+                  <Txt variant="h3" color={colors.onAccent}>
+                    H
+                  </Txt>
+                </View>
+                <Txt variant="h3">Happnin</Txt>
               </View>
-              <Text style={styles.headline}>Find the night before it finds your group chat.</Text>
-              <Text style={styles.copy}>
-                Events, clubs, parties, campus pop-ups, and nightlife for {campus.name}. Student email required.
-              </Text>
-              <Text style={styles.demo}>
-                {isDemoMode ? "Demo mode" : "Supabase connected"}: use student@example.edu for the local demo.
-              </Text>
+
+              <Txt variant="display" style={styles.headline}>
+                Everything happening on campus, in one place.
+              </Txt>
+              <Txt variant="body" color={colors.muted}>
+                Discover student events, RSVP in a tap, and follow the clubs you care about at {campus.name}.
+              </Txt>
+              <Badge label={isDemoMode ? "Demo mode" : "Connected"} tone={isDemoMode ? "accent" : "success"} />
             </View>
 
             <View style={styles.form}>
-              <TextField label={`School email (${formatAllowedDomains()})`} value={email} onChangeText={setEmail} />
-              <TextField label="Password" value={password} onChangeText={setPassword} secureTextEntry />
+              <View style={styles.modeTabs}>
+                <ModeTab label="Sign up" active={mode === "signUp"} onPress={() => setMode("signUp")} />
+                <ModeTab label="Log in" active={mode === "signIn"} onPress={() => setMode("signIn")} />
+              </View>
+
+              <TextField
+                label="School email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoComplete="email"
+                hint={`Allowed domains: ${formatAllowedDomains()}`}
+              />
+              <TextField label="Password" value={password} onChangeText={setPassword} secureTextEntry autoComplete="password" />
               <AppButton
                 title={mode === "signUp" ? "Create account" : "Log in"}
                 onPress={submit}
                 loading={loading}
                 icon={Mail}
               />
-              <AppButton
-                title={mode === "signUp" ? "I already have an account" : "Create a new account"}
-                onPress={() => setMode(mode === "signUp" ? "signIn" : "signUp")}
-                variant="ghost"
-              />
+              <Txt variant="caption" color={colors.faint} center>
+                Use student@example.edu for the local demo.
+              </Txt>
             </View>
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </LinearGradient>
+  );
+}
+
+function ModeTab({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  return (
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={[styles.modeTab, active && styles.modeTabActive]}>
+        <Txt variant="label" color={active ? colors.text : colors.faint}>
+          {label}
+        </Txt>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -91,50 +130,54 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "space-between",
     padding: spacing.lg,
-    paddingTop: 64,
-    paddingBottom: 32,
+    paddingTop: 72,
+    paddingBottom: 40,
     gap: spacing.xl
   },
   hero: {
     gap: spacing.md
   },
-  logo: {
-    color: colors.text,
-    fontSize: 20,
-    fontWeight: "900"
+  brandRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginBottom: spacing.sm
   },
-  logoPill: {
-    alignSelf: "flex-start",
-    borderRadius: radius.pill,
-    backgroundColor: "rgba(168, 85, 247, 0.28)",
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    ...shadows.soft
+  logoMark: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: colors.accent,
+    alignItems: "center",
+    justifyContent: "center"
   },
   headline: {
-    color: colors.text,
-    fontSize: 42,
-    lineHeight: 46,
-    fontWeight: "900"
-  },
-  copy: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 23
-  },
-  demo: {
-    color: colors.amber,
-    fontWeight: "800"
+    fontSize: 38,
+    lineHeight: 44
   },
   form: {
     gap: spacing.md,
-    backgroundColor: "rgba(8, 4, 15, 0.78)",
+    backgroundColor: colors.surface,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md,
-    ...shadows.glow
+    borderColor: colors.border,
+    padding: spacing.md
+  },
+  modeTabs: {
+    flexDirection: "row",
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.xxs
+  },
+  modeTab: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: spacing.sm,
+    borderRadius: radius.sm
+  },
+  modeTabActive: {
+    backgroundColor: colors.surfaceStrong
   }
 });

@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 import { colors, radius, spacing } from "../theme";
+import { Txt } from "./Txt";
 
 type Props = {
   label: string;
@@ -12,9 +13,13 @@ export function Chip({ label, selected, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole={onPress ? "button" : "text"}
+      accessibilityState={{ selected }}
       style={({ pressed }) => [styles.chip, selected && styles.selected, pressed && styles.pressed]}
     >
-      <Text style={[styles.text, selected && styles.selectedText]}>{label}</Text>
+      <Txt variant="caption" color={selected ? colors.accentText : colors.muted}>
+        {label}
+      </Txt>
     </Pressable>
   );
 }
@@ -23,30 +28,16 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.border,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: "rgba(18, 9, 31, 0.86)"
+    paddingVertical: spacing.xs,
+    backgroundColor: colors.surface
   },
   selected: {
-    backgroundColor: "rgba(168, 85, 247, 0.94)",
-    borderColor: colors.purpleGlow,
-    shadowColor: colors.pink,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18,
-    shadowRadius: 16,
-    elevation: 3
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accent
   },
   pressed: {
-    transform: [{ scale: 0.96 }],
-    opacity: 0.88
-  },
-  text: {
-    color: colors.muted,
-    fontWeight: "900",
-    fontSize: 13
-  },
-  selectedText: {
-    color: colors.text
+    opacity: 0.8
   }
 });

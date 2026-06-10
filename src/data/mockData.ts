@@ -125,7 +125,7 @@ export const demoEvents: HappninEvent[] = [
       "Start the weekend with a rooftop social, student DJs, mocktails, and late-night food nearby. Bring your student ID.",
     category: "Parties",
     imageUrl:
-      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&h=1125&q=80",
     startsAt: hours(8),
     endsAt: hours(12),
     venueName: "Union Rooftop",
@@ -151,7 +151,7 @@ export const demoEvents: HappninEvent[] = [
       "No partner needed. We will teach the basics for 30 minutes, then open the floor for a casual social.",
     category: "Clubs",
     imageUrl:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&h=1125&q=80",
     startsAt: hours(28),
     endsAt: hours(31),
     venueName: "Arts Hall Studio B",
@@ -173,7 +173,7 @@ export const demoEvents: HappninEvent[] = [
       "Meet outside the student center. We have limited shuttle seats, snacks, and a bring-a-blanket vibe.",
     category: "Food",
     imageUrl:
-      "https://images.unsplash.com/photo-1478827387698-1527781a4887?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1478827387698-1527781a4887?auto=format&fit=crop&w=900&h=1125&q=80",
     startsAt: hours(52),
     endsAt: hours(57),
     venueName: "Student Center Loop",
@@ -198,7 +198,7 @@ export const demoEvents: HappninEvent[] = [
       "Four student-favorite food spots, one walking route, and group discounts for anyone who RSVPs.",
     category: "Nightlife",
     imageUrl:
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&h=1125&q=80",
     startsAt: hours(72),
     endsAt: hours(76),
     venueName: "Main Gate",

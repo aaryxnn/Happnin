@@ -3,15 +3,17 @@ import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { Calendar, Clock, ImagePlus, MapPin } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Platform, Pressable, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import { AppButton } from "../components/AppButton";
 import { Chip } from "../components/Chip";
+import { PageHeader } from "../components/PageElements";
 import { Screen } from "../components/Screen";
 import { TextField } from "../components/TextField";
+import { Txt } from "../components/Txt";
 import { useApp } from "../context/AppContext";
-import { categories, colors, radius, shadows, spacing } from "../theme";
+import { categories, colors, radius, spacing } from "../theme";
 import { Campus, EventCategory } from "../types";
 
 type PlaceSuggestion = {
@@ -31,7 +33,7 @@ type PosterAsset = {
 type PickerMode = "date" | "time" | null;
 
 const defaultPosterImage =
-  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80";
+  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=900&h=1125&q=80";
 
 export function CreateEventScreen() {
   const navigation = useNavigation();
@@ -128,7 +130,7 @@ export function CreateEventScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [4, 5],
       quality: 0.86
     });
 
@@ -182,20 +184,26 @@ export function CreateEventScreen() {
 
   return (
     <Screen>
-      <Text style={styles.title}>Create event</Text>
-      <Text style={styles.copy}>Build the event students will see in the feed.</Text>
+      <PageHeader title="Create event" copy="Add the details students need before this goes live in the campus feed." />
 
-      <TextField label="Event title" value={title} onChangeText={setTitle} autoCapitalize="words" />
-      <TextField label="Description" value={description} onChangeText={setDescription} multiline style={styles.textArea} />
+      <TextField label="Event title" value={title} onChangeText={setTitle} autoCapitalize="words" placeholder="Open mic night" />
+      <TextField
+        label="Description"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+        style={styles.textArea}
+        placeholder="What should students know before they RSVP?"
+      />
 
-      <Text style={styles.section}>Category</Text>
+      <Txt variant="h3" style={styles.section}>Category</Txt>
       <View style={styles.wrap}>
         {categories.map((item) => (
           <Chip key={item} label={item} selected={category === item} onPress={() => setCategory(item)} />
         ))}
       </View>
 
-      <Text style={styles.section}>Date and time</Text>
+      <Txt variant="h3" style={styles.section}>Date and time</Txt>
       <View style={styles.dateGrid}>
         <AppButton title={formatDate(startsAt)} icon={Calendar} variant="secondary" onPress={() => setActivePicker("date")} />
         <AppButton title={formatTime(startsAt)} icon={Clock} variant="secondary" onPress={() => setActivePicker("time")} />
@@ -214,7 +222,7 @@ export function CreateEventScreen() {
         </View>
       ) : null}
 
-      <Text style={styles.section}>Location</Text>
+      <Txt variant="h3" style={styles.section}>Location</Txt>
       <View style={styles.placeList}>
         {placeSuggestions.map((place) => (
           <Pressable
@@ -226,18 +234,20 @@ export function CreateEventScreen() {
               pressed && styles.placePressed
             ]}
           >
-            <MapPin color={selectedPlaceName === place.name ? colors.background : colors.accent} size={18} />
+            <MapPin color={selectedPlaceName === place.name ? colors.accent : colors.faint} size={18} />
             <View style={{ flex: 1 }}>
-              <Text style={[styles.placeName, selectedPlaceName === place.name && styles.placeNameSelected]}>{place.name}</Text>
-              <Text style={[styles.placeAddress, selectedPlaceName === place.name && styles.placeAddressSelected]}>
+              <Txt variant="bodyStrong" color={selectedPlaceName === place.name ? colors.text : colors.text}>
+                {place.name}
+              </Txt>
+              <Txt variant="caption" color={colors.muted} style={styles.placeAddress}>
                 {place.address}
-              </Text>
+              </Txt>
             </View>
           </Pressable>
         ))}
       </View>
 
-      <TextField label="Venue name" value={venueName} onChangeText={setVenueName} autoCapitalize="words" />
+      <TextField label="Venue name" value={venueName} onChangeText={setVenueName} autoCapitalize="words" placeholder="Campus Center" />
       <TextField
         label="Address or street"
         value={address}
@@ -248,18 +258,28 @@ export function CreateEventScreen() {
 
       {nearbyAddresses.length > 0 || addressSearchStatus !== "idle" ? (
         <View style={styles.addressResults}>
-          {addressSearchStatus === "searching" ? <Text style={styles.resultHint}>Finding nearby addresses...</Text> : null}
-          {addressSearchStatus === "error" ? <Text style={styles.resultHint}>Address search is unavailable right now.</Text> : null}
+          {addressSearchStatus === "searching" ? (
+            <Txt variant="caption" color={colors.muted} style={styles.resultHint}>
+              Finding nearby addresses...
+            </Txt>
+          ) : null}
+          {addressSearchStatus === "error" ? (
+            <Txt variant="caption" color={colors.muted} style={styles.resultHint}>
+              Address search is unavailable right now.
+            </Txt>
+          ) : null}
           {nearbyAddresses.map((place) => (
             <Pressable
               key={place.id ?? place.address}
               onPress={() => selectPlace(place)}
               style={({ pressed }) => [styles.addressResult, pressed && styles.placePressed]}
             >
-              <MapPin color={colors.accent} size={16} />
+              <MapPin color={colors.faint} size={16} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.resultName}>{place.name}</Text>
-                <Text style={styles.resultAddress}>{place.address}</Text>
+                <Txt variant="bodyStrong">{place.name}</Txt>
+                <Txt variant="caption" color={colors.muted} style={styles.placeAddress}>
+                  {place.address}
+                </Txt>
               </View>
             </Pressable>
           ))}
@@ -287,12 +307,12 @@ export function CreateEventScreen() {
         </MapView>
       </View>
 
-      <Text style={styles.section}>Poster</Text>
+      <Txt variant="h3" style={styles.section}>Poster</Txt>
       <Pressable onPress={choosePoster} style={({ pressed }) => [styles.posterPicker, pressed && styles.placePressed]}>
         <Image source={{ uri: selectedPosterUri }} style={styles.posterImage} />
         <View style={styles.posterOverlay}>
-          <ImagePlus color={colors.text} size={24} />
-          <Text style={styles.posterText}>{poster ? "Change photo" : "Choose from gallery"}</Text>
+          <ImagePlus color={colors.text} size={20} />
+          <Txt variant="label">{poster ? "Change photo" : "Choose from gallery"}</Txt>
         </View>
       </Pressable>
 
@@ -446,27 +466,12 @@ function formatTime(date: Date) {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 34,
-    fontWeight: "900",
-    marginBottom: spacing.sm
-  },
-  copy: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 23,
-    marginBottom: spacing.md
-  },
   textArea: {
     minHeight: 110,
     textAlignVertical: "top",
     paddingTop: spacing.md
   },
   section: {
-    color: colors.text,
-    fontSize: 17,
-    fontWeight: "900",
     marginTop: spacing.md,
     marginBottom: spacing.sm
   },
@@ -497,33 +502,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.sm,
     backgroundColor: colors.surface,
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.borderSoft,
     padding: spacing.md
   },
   placeSelected: {
-    backgroundColor: colors.accent,
-    borderColor: colors.purpleGlow
+    backgroundColor: "rgba(37, 99, 235, 0.16)",
+    borderColor: colors.accent
   },
   placePressed: {
     opacity: 0.82,
     transform: [{ scale: 0.99 }]
   },
-  placeName: {
-    color: colors.text,
-    fontWeight: "900"
-  },
-  placeNameSelected: {
-    color: colors.background
-  },
   placeAddress: {
-    color: colors.muted,
-    marginTop: spacing.xs,
-    lineHeight: 19
-  },
-  placeAddressSelected: {
-    color: colors.background
+    marginTop: spacing.xxs
   },
   addressResults: {
     gap: spacing.sm,
@@ -535,24 +528,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.sm,
     backgroundColor: colors.surfaceStrong,
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.borderSoft,
     padding: spacing.md
   },
-  resultName: {
-    color: colors.text,
-    fontWeight: "900"
-  },
-  resultAddress: {
-    color: colors.muted,
-    marginTop: spacing.xs,
-    lineHeight: 19
-  },
   resultHint: {
-    color: colors.muted,
     backgroundColor: colors.surface,
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.md
@@ -563,24 +546,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderSoft,
     overflow: "hidden",
-    marginBottom: spacing.md,
-    ...shadows.soft
+    marginBottom: spacing.md
   },
   map: {
     flex: 1
   },
   posterPicker: {
-    minHeight: 220,
     borderRadius: radius.md,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: colors.borderSoft,
-    backgroundColor: colors.surface,
-    ...shadows.soft
+    backgroundColor: colors.surface
   },
   posterImage: {
     width: "100%",
-    height: 220
+    aspectRatio: 4 / 5
   },
   posterOverlay: {
     position: "absolute",
@@ -593,10 +573,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: spacing.sm,
     backgroundColor: "rgba(5, 3, 10, 0.72)"
-  },
-  posterText: {
-    color: colors.text,
-    fontWeight: "900"
   },
   submitWrap: {
     marginTop: spacing.lg
