@@ -4,7 +4,7 @@ Source inspiration: Refero Styles, Partiful style reference
 https://styles.refero.design/style/6db1057d-3457-4173-9184-df160415f060
 
 Applied visual target: the provided dark mobile mockup with "What's happnin?", a live campus
-pill, large pill filters, oversized poster event cards, and a five-item bottom nav with a
+pill, large pill filters, oversized poster event cards, and a bottom nav with Map plus a
 center create action.
 
 This branch adapts the playful event-invitation language from the source into Happnin's own
@@ -100,8 +100,8 @@ horizontal pill filters. Avoid stat cards on the feed.
 
 ### Navigation
 
-The bottom tab bar uses five visible actions: Home, Explore, center create, Calendar, Profile.
-The create action is a large pink/purple circle in the center. Inactive labels stay muted.
+The bottom tab bar uses Home, Explore, Map, Calendar, and Profile, with a large pink/purple
+create action pinned in the center. Inactive labels stay muted.
 
 ## Screen Notes
 
