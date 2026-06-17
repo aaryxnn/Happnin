@@ -1,11 +1,10 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { ChevronDown, Search, SlidersHorizontal } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
-import { Chip } from "../components/Chip";
 import { EventCard } from "../components/EventCard";
 import { Screen } from "../components/Screen";
-import { TextField } from "../components/TextField";
 import { useApp } from "../context/AppContext";
 import { colors, radius, shadows, spacing } from "../theme";
 
@@ -13,9 +12,11 @@ type DateFilter = "All" | "Tonight" | "Tomorrow" | "Weekend" | "Trending";
 const dateFilters: DateFilter[] = ["All", "Tonight", "Tomorrow", "Weekend", "Trending"];
 
 export function FeedScreen() {
-  const { events, rsvps, user, campus } = useApp();
+  const { events, rsvps, user } = useApp();
+  const { width } = useWindowDimensions();
   const [dateFilter, setDateFilter] = useState<DateFilter>("All");
   const [search, setSearch] = useState("");
+  const compactHeader = width < 410;
 
   const publishedEvents = events
     .filter((event) => event.status === "published")
@@ -35,41 +36,64 @@ export function FeedScreen() {
       }
       return new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime();
     });
-  const totalEvents = publishedEvents.length;
-  const nextEvent = publishedEvents[0];
 
   return (
-    <Screen>
-      <LinearGradient colors={["#3b0764", "#1b0733", "#08040f"]} style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={styles.livePill}>
-            <View style={styles.liveDot} />
-            <Text style={styles.eyebrow}>{campus.shortName}</Text>
-          </View>
-          <Text style={styles.count}>{totalEvents} live</Text>
-        </View>
-        <Text style={styles.title}>What's happnin?</Text>
-        <View style={styles.statRow}>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{events.filter((event) => event.status === "published").length}</Text>
-            <Text style={styles.statLabel}>campus drops</Text>
-          </View>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{nextEvent ? formatSoon(nextEvent.startsAt) : "--"}</Text>
-            <Text style={styles.statLabel}>next up</Text>
-          </View>
-        </View>
-      </LinearGradient>
-
-      <View style={styles.searchWrap}>
-        <TextField label="Search events" value={search} onChangeText={setSearch} placeholder="DJ night, Campus Center, clubs..." />
+    <Screen style={styles.screen}>
+      <View style={styles.heroRow}>
+        <Text
+          style={[styles.title, compactHeader && styles.titleCompact]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.74}
+        >
+          What's <Text style={styles.titleAccent}>happnin?</Text>
+        </Text>
+        <Pressable style={({ pressed }) => [styles.livePill, compactHeader && styles.livePillCompact, pressed && styles.pressed]}>
+          <View style={[styles.liveDot, compactHeader && styles.liveDotCompact]} />
+          <Text style={[styles.liveText, compactHeader && styles.liveTextCompact]}>Live on Campus</Text>
+          <ChevronDown color={colors.inkMuted} size={18} strokeWidth={2.7} />
+        </Pressable>
       </View>
 
-      <View style={styles.filters}>
-        {dateFilters.map((item) => (
-          <Chip key={item} label={item} selected={dateFilter === item} onPress={() => setDateFilter(item)} />
-        ))}
+      <View style={styles.searchRow}>
+        <View style={styles.searchBox}>
+          <Search color={colors.inkFaint} size={25} strokeWidth={2.35} />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Search events, people, places..."
+            placeholderTextColor={colors.inkFaint}
+            style={styles.searchInput}
+            autoCapitalize="none"
+          />
+        </View>
+        <Pressable style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}>
+          <SlidersHorizontal color={colors.purpleGlow} size={25} strokeWidth={2.6} />
+        </Pressable>
       </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filters}
+        style={styles.filterScroller}
+      >
+        {dateFilters.map((item) => {
+          const selected = dateFilter === item;
+          return (
+            <Pressable
+              key={item}
+              onPress={() => setDateFilter(item)}
+              style={({ pressed }) => [styles.filterPill, selected && styles.filterPillSelected, pressed && styles.pressed]}
+            >
+              {selected ? (
+                <LinearGradient colors={["#b026ff", colors.accentStrong]} style={StyleSheet.absoluteFillObject} />
+              ) : null}
+              <Text style={[styles.filterText, selected && styles.filterTextSelected]}>{item}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
       {publishedEvents.length === 0 ? (
         <Text style={styles.empty}>No events match this filter yet. Try All or clear your search.</Text>
@@ -108,87 +132,138 @@ function matchesDateFilter(startsAt: string, filter: DateFilter) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    gap: spacing.md,
-    marginBottom: spacing.lg,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: "rgba(251, 247, 255, 0.18)",
-    ...shadows.paper
+  screen: {
+    paddingHorizontal: 18,
+    paddingTop: spacing.lg
   },
-  headerTop: {
+  heroRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 0
-  },
-  livePill: {
-    flexDirection: "row",
-    alignItems: "center",
     gap: spacing.xs,
-    backgroundColor: colors.paper,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.paperBorder,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs
-  },
-  liveDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.lime
-  },
-  eyebrow: {
-    color: colors.ink,
-    fontWeight: "900",
-    letterSpacing: -0.1
-  },
-  count: {
-    color: colors.lime,
-    fontWeight: "900",
-    fontSize: 12
+    marginBottom: spacing.lg
   },
   title: {
     color: colors.text,
-    fontSize: 34,
-    lineHeight: 38,
+    flexShrink: 1,
+    fontSize: 31,
+    lineHeight: 36,
     fontWeight: "900",
-    letterSpacing: -0.5
+    letterSpacing: 0
   },
-  statRow: {
+  titleAccent: {
+    color: colors.pink
+  },
+  titleCompact: {
+    fontSize: 23,
+    lineHeight: 28
+  },
+  livePill: {
+    minHeight: 48,
     flexDirection: "row",
-    gap: spacing.sm
+    alignItems: "center",
+    gap: spacing.xs,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: "rgba(168, 85, 247, 0.52)",
+    backgroundColor: "rgba(29, 16, 48, 0.86)",
+    paddingHorizontal: spacing.md,
+    ...shadows.paperTight
   },
-  stat: {
-    flex: 1,
-    backgroundColor: colors.paper,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.paperBorder,
-    padding: spacing.sm
+  livePillCompact: {
+    minHeight: 42,
+    paddingHorizontal: 10
   },
-  statValue: {
-    color: colors.ink,
-    fontWeight: "900",
-    fontSize: 18,
-    letterSpacing: -0.25
+  liveDot: {
+    width: 15,
+    height: 15,
+    borderRadius: 8,
+    backgroundColor: colors.lime
   },
-  statLabel: {
+  liveDotCompact: {
+    width: 13,
+    height: 13,
+    borderRadius: 7
+  },
+  liveText: {
     color: colors.inkMuted,
-    fontWeight: "800",
-    fontSize: 12,
-    marginTop: spacing.xs
+    fontSize: 14,
+    fontWeight: "800"
   },
-  searchWrap: {
+  liveTextCompact: {
+    fontSize: 12
+  },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
     marginBottom: spacing.lg
   },
-  filters: {
+  searchBox: {
+    minHeight: 66,
+    flex: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
+    alignItems: "center",
     gap: spacing.sm,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: "rgba(168, 85, 247, 0.42)",
+    backgroundColor: "rgba(13, 8, 24, 0.92)",
+    paddingHorizontal: spacing.md
+  },
+  searchInput: {
+    flex: 1,
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: "800",
+    outlineStyle: "none" as never
+  },
+  filterButton: {
+    width: 66,
+    height: 66,
+    borderRadius: 17,
+    borderWidth: 1.5,
+    borderColor: "rgba(168, 85, 247, 0.42)",
+    backgroundColor: "rgba(18, 9, 31, 0.94)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  filterScroller: {
+    marginHorizontal: -18,
     marginBottom: spacing.md
+  },
+  filters: {
+    gap: spacing.sm,
+    paddingHorizontal: 18,
+    paddingBottom: spacing.xs
+  },
+  filterPill: {
+    minHeight: 54,
+    minWidth: 82,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: "rgba(168, 85, 247, 0.46)",
+    backgroundColor: "rgba(13, 8, 24, 0.82)",
+    paddingHorizontal: spacing.lg
+  },
+  filterPillSelected: {
+    borderColor: "rgba(255, 78, 205, 0.44)",
+    ...shadows.glow
+  },
+  filterText: {
+    color: colors.inkMuted,
+    fontSize: 15,
+    fontWeight: "900"
+  },
+  filterTextSelected: {
+    color: colors.text
+  },
+  pressed: {
+    transform: [{ scale: 0.97 }],
+    opacity: 0.9
   },
   empty: {
     color: colors.inkMuted,
@@ -201,10 +276,3 @@ const styles = StyleSheet.create({
     ...shadows.paperTight
   }
 });
-
-function formatSoon(startsAt: string) {
-  const start = new Date(startsAt).getTime();
-  const diffHours = Math.max(0, Math.round((start - Date.now()) / (60 * 60 * 1000)));
-  if (diffHours < 24) return `${diffHours}h`;
-  return `${Math.round(diffHours / 24)}d`;
-}

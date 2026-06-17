@@ -3,6 +3,10 @@
 Source inspiration: Refero Styles, Partiful style reference
 https://styles.refero.design/style/6db1057d-3457-4173-9184-df160415f060
 
+Applied visual target: the provided dark mobile mockup with "What's happnin?", a live campus
+pill, large pill filters, oversized poster event cards, and a five-item bottom nav with a
+center create action.
+
 This branch adapts the playful event-invitation language from the source into Happnin's own
 dark purple, electric pink, lime, amber, and moon-white palette. The goal is not to clone
 Partiful. It is to make Happnin feel more tactile, editorial, and party-native while keeping
@@ -49,9 +53,10 @@ selected states, while primary actions use near-black filled buttons with moon-w
 
 ## Shape, Spacing, and Elevation
 
-- Buttons use 8-12px radius, not giant glowing capsules unless the control is a chip.
+- Buttons use 8-12px radius, except feed filters and RSVP/status pills which use full radius.
 - Chips, filter tabs, RSVP tags, and category labels use full pill radius.
-- Event cards use 18-22px radius with dark poster content areas and a strong photo region.
+- Event cards are intentionally large, with strong purple borders, dark poster content areas,
+  and a wide graphic poster region.
 - Dark poster cards use soft ink shadows and purple hairline borders instead of neon glow.
 - Full-screen dark surfaces can use subtle purple gradients, but controls should not use gradients.
 - Keep the mobile layout comfortable: 16px screen padding, 10-16px internal gaps, and generous bottom spacing above tabs.
@@ -78,26 +83,30 @@ wash with strong contrast. Keep category and date filters pill-shaped.
 
 Event cards should feel like an Instagram-style poster feed:
 
-- Organizer header first: avatar initial, organizer name, venue, verification, and category pill.
-- Tall 4:5 poster image with no title overlay, so event photography feels like the main feed object.
-- Dark caption-style body below the poster with date/time, RSVP state, title, and stacked meta rows.
-- Use compact mono-weight icons in the meta rows.
+- Organizer header first: avatar initial, organizer name, venue, verification, category pill,
+  and a more/options icon.
+- Use a wide poster image area with bold graphic typography over the photo, closer to a campus
+  event flyer than a plain image card.
+- Dark caption-style body below the poster with pink date, time range, RSVP state, bookmark,
+  title, and compact meta row.
+- Use compact mono-weight icons in the meta rows with subtle separators.
 - Keep shadows soft and physical, not neon.
 
 ### Feed Header
 
-The feed header can keep a purple-to-night gradient, but it should feel like a party poster
-surface. Use a live campus pill, big title, and small stat cards. Avoid a dense dashboard feel.
+The feed header should match the reference: inline "What's happnin?" title with pink accent
+word, right-side live campus pill, large search field, separate filter icon button, and
+horizontal pill filters. Avoid stat cards on the feed.
 
 ### Navigation
 
-The bottom tab bar should feel like a floating invitation strip: rounded, compact, legible, and
-high contrast. Active icons can use purple/pink washes. Inactive labels should stay muted.
+The bottom tab bar uses five visible actions: Home, Explore, center create, Calendar, Profile.
+The create action is a large pink/purple circle in the center. Inactive labels stay muted.
 
 ## Screen Notes
 
-- Feed: strongest expression of the new system. Use the poster-like header, dark poster event cards,
-  pill filters, and compact search.
+- Feed: strongest expression of the new system. Use the reference-style header, oversized dark
+  poster event cards, pill filters, and icon search/filter row.
 - Discover: category tiles should look like small invitation tiles, not dark dashboard cards.
 - Event details: use a large photo hero, dark metadata card, poster RSVP panel, and clear
   black primary RSVP button.

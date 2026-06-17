@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { CalendarPlus, Compass, LucideProps, Map, Sparkles, Ticket, User } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Calendar, Compass, Home, LucideProps, Plus, User } from "lucide-react-native";
 import { ComponentType } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
@@ -11,7 +12,6 @@ import { CreateEventScreen } from "../screens/CreateEventScreen";
 import { DiscoverScreen } from "../screens/DiscoverScreen";
 import { EventDetailsScreen } from "../screens/EventDetailsScreen";
 import { FeedScreen } from "../screens/FeedScreen";
-import { MapScreen } from "../screens/MapScreen";
 import { OnboardingScreen } from "../screens/OnboardingScreen";
 import { OrganizerScreen } from "../screens/OrganizerScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
@@ -29,54 +29,71 @@ function MainTabs() {
         headerShown: false,
         tabBarStyle: {
           position: "absolute",
-          left: 14,
-          right: 14,
-          bottom: 12,
-          backgroundColor: colors.paper,
-          borderTopColor: colors.paperBorder,
-          borderTopWidth: 1,
-          borderColor: colors.paperBorder,
-          borderWidth: 1,
-          borderRadius: 26,
-          height: 72,
-          paddingTop: 7,
-          paddingBottom: 11,
-          shadowColor: "#000000",
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.18,
-          shadowRadius: 24,
-          elevation: 16
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 92,
+          paddingTop: 10,
+          paddingBottom: 16,
+          backgroundColor: "rgba(7, 3, 14, 0.98)",
+          borderTopColor: "rgba(168, 85, 247, 0.28)",
+          borderTopWidth: 1.5,
+          shadowColor: colors.accent,
+          shadowOffset: { width: 0, height: -8 },
+          shadowOpacity: 0.1,
+          shadowRadius: 18,
+          elevation: 20
         },
-        tabBarActiveTintColor: colors.ink,
+        tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.inkFaint,
-        tabBarItemStyle: { borderRadius: 22 },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "900", letterSpacing: -0.15 }
+        tabBarItemStyle: { minHeight: 66 },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: "800", letterSpacing: 0 }
       }}
     >
-      <Tabs.Screen name="Feed" component={FeedScreen} options={{ tabBarIcon: icon(Sparkles) }} />
-      <Tabs.Screen name="Discover" component={DiscoverScreen} options={{ tabBarIcon: icon(Compass) }} />
-      <Tabs.Screen name="Map" component={MapScreen} options={{ tabBarIcon: icon(Map) }} />
-      <Tabs.Screen name="Saved" component={SavedScreen} options={{ tabBarIcon: icon(Ticket) }} />
-      <Tabs.Screen name="Organizer" component={OrganizerScreen} options={{ tabBarIcon: icon(CalendarPlus) }} />
-      <Tabs.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: icon(User) }} />
+      <Tabs.Screen name="Feed" component={FeedScreen} options={{ tabBarLabel: "Home", tabBarIcon: tabIcon(Home) }} />
+      <Tabs.Screen name="Discover" component={DiscoverScreen} options={{ tabBarLabel: "Explore", tabBarIcon: tabIcon(Compass) }} />
+      <Tabs.Screen
+        name="Organizer"
+        component={OrganizerScreen}
+        listeners={({ navigation }) => ({
+          tabPress: (event) => {
+            event.preventDefault();
+            (navigation.getParent() as { navigate?: (screen: string) => void } | undefined)?.navigate?.("CreateEvent");
+          }
+        })}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: createIcon
+        }}
+      />
+      <Tabs.Screen name="Saved" component={SavedScreen} options={{ tabBarLabel: "Calendar", tabBarIcon: tabIcon(Calendar) }} />
+      <Tabs.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: "Profile", tabBarIcon: tabIcon(User) }} />
     </Tabs.Navigator>
   );
 }
 
-function icon(Icon: ComponentType<LucideProps>) {
+function tabIcon(Icon: ComponentType<LucideProps>) {
   return ({ color, size, focused }: { color: string; size: number; focused: boolean }) => (
     <View
       style={{
-        width: 34,
-        height: 30,
-        borderRadius: 17,
+        width: 40,
+        height: 34,
+        borderRadius: 18,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: focused ? "rgba(168, 85, 247, 0.16)" : "transparent"
+        backgroundColor: focused ? "rgba(168, 85, 247, 0.18)" : "transparent"
       }}
     >
-      <Icon color={focused ? colors.accentStrong : color} size={size} strokeWidth={2.5} />
+      <Icon color={focused ? colors.accent : color} size={size + 2} strokeWidth={focused ? 3 : 2.5} />
     </View>
+  );
+}
+
+function createIcon() {
+  return (
+    <LinearGradient colors={[colors.pink, colors.accent]} start={{ x: 0.18, y: 0 }} end={{ x: 0.9, y: 1 }} style={styles.createButton}>
+      <Plus color={colors.text} size={34} strokeWidth={3.2} />
+    </LinearGradient>
   );
 }
 
@@ -126,3 +143,19 @@ export function RootNavigator() {
     </Stack.Navigator>
   );
 }
+
+const styles = {
+  createButton: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    marginTop: -18,
+    shadowColor: colors.pink,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+    elevation: 16
+  }
+};
