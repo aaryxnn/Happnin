@@ -3,9 +3,8 @@
 Source inspiration: Refero Styles, Partiful style reference
 https://styles.refero.design/style/6db1057d-3457-4173-9184-df160415f060
 
-Applied visual target: the provided dark mobile mockup with "What's happnin?", a live campus
-pill, large pill filters, oversized poster event cards, and a bottom nav with Map plus a
-center create action.
+Applied visual target: the provided dark mobile mockup with "What's happnin?", a header create
+button, large pill filters, oversized poster event cards, and a clean bottom nav with Map.
 
 This branch adapts the playful event-invitation language from the source into Happnin's own
 dark purple, electric pink, lime, amber, and moon-white palette. The goal is not to clone
@@ -95,13 +94,13 @@ Event cards should feel like an Instagram-style poster feed:
 ### Feed Header
 
 The feed header should match the reference: inline "What's happnin?" title with pink accent
-word, right-side live campus pill, large search field, separate filter icon button, and
-horizontal pill filters. Avoid stat cards on the feed.
+word, right-side create button, large search field, separate filter icon button, and horizontal
+pill filters. Avoid stat cards or nonfunctional status pills on the feed.
 
 ### Navigation
 
-The bottom tab bar uses Home, Explore, Map, Calendar, and Profile, with a large pink/purple
-create action pinned in the center. Inactive labels stay muted.
+The bottom tab bar uses Home, Explore, Map, Calendar, and Profile. Keep create in the feed
+header so nav items have clear spacing. Inactive labels stay muted.
 
 ## Screen Notes
 

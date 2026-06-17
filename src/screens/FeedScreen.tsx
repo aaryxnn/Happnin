@@ -1,17 +1,21 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { ChevronDown, Search, SlidersHorizontal } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Plus, Search, SlidersHorizontal } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 import { EventCard } from "../components/EventCard";
 import { Screen } from "../components/Screen";
 import { useApp } from "../context/AppContext";
+import { RootStackParamList } from "../navigation/types";
 import { colors, radius, shadows, spacing } from "../theme";
 
 type DateFilter = "All" | "Tonight" | "Tomorrow" | "Weekend" | "Trending";
 const dateFilters: DateFilter[] = ["All", "Tonight", "Tomorrow", "Weekend", "Trending"];
 
 export function FeedScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { events, rsvps, user } = useApp();
   const { width } = useWindowDimensions();
   const [dateFilter, setDateFilter] = useState<DateFilter>("All");
@@ -48,10 +52,15 @@ export function FeedScreen() {
         >
           What's <Text style={styles.titleAccent}>happnin?</Text>
         </Text>
-        <Pressable style={({ pressed }) => [styles.livePill, compactHeader && styles.livePillCompact, pressed && styles.pressed]}>
-          <View style={[styles.liveDot, compactHeader && styles.liveDotCompact]} />
-          <Text style={[styles.liveText, compactHeader && styles.liveTextCompact]}>Live on Campus</Text>
-          <ChevronDown color={colors.inkMuted} size={18} strokeWidth={2.7} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Create event"
+          onPress={() => navigation.navigate("CreateEvent")}
+          style={({ pressed }) => [styles.createButton, compactHeader && styles.createButtonCompact, pressed && styles.pressed]}
+        >
+          <LinearGradient colors={[colors.pink, colors.accent]} start={{ x: 0.16, y: 0 }} end={{ x: 0.9, y: 1 }} style={styles.createFill}>
+            <Plus color={colors.text} size={30} strokeWidth={3.2} />
+          </LinearGradient>
         </Pressable>
       </View>
 
@@ -145,7 +154,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.text,
+    flex: 1,
     flexShrink: 1,
+    minWidth: 0,
     fontSize: 31,
     lineHeight: 36,
     fontWeight: "900",
@@ -158,40 +169,26 @@ const styles = StyleSheet.create({
     fontSize: 23,
     lineHeight: 28
   },
-  livePill: {
-    minHeight: 48,
-    flexDirection: "row",
+  createButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    overflow: "hidden",
+    flexShrink: 0,
+    backgroundColor: colors.pink,
+    ...shadows.glow
+  },
+  createButtonCompact: {
+    width: 48,
+    height: 48,
+    borderRadius: 24
+  },
+  createFill: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
     alignItems: "center",
-    gap: spacing.xs,
-    borderRadius: radius.pill,
-    borderWidth: 1.5,
-    borderColor: "rgba(168, 85, 247, 0.52)",
-    backgroundColor: "rgba(29, 16, 48, 0.86)",
-    paddingHorizontal: spacing.md,
-    ...shadows.paperTight
-  },
-  livePillCompact: {
-    minHeight: 42,
-    paddingHorizontal: 10
-  },
-  liveDot: {
-    width: 15,
-    height: 15,
-    borderRadius: 8,
-    backgroundColor: colors.lime
-  },
-  liveDotCompact: {
-    width: 13,
-    height: 13,
-    borderRadius: 7
-  },
-  liveText: {
-    color: colors.inkMuted,
-    fontSize: 14,
-    fontWeight: "800"
-  },
-  liveTextCompact: {
-    fontSize: 12
+    justifyContent: "center"
   },
   searchRow: {
     flexDirection: "row",

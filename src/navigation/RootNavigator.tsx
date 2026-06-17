@@ -1,7 +1,6 @@
 import { BottomTabBarProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { LinearGradient } from "expo-linear-gradient";
-import { Calendar, Compass, Home, LucideProps, Map as MapIcon, Plus, User } from "lucide-react-native";
+import { Calendar, Compass, Home, LucideProps, Map as MapIcon, User } from "lucide-react-native";
 import { ComponentType } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -50,13 +49,6 @@ const tabConfig: Record<string, { label: string; Icon: ComponentType<LucideProps
 
 function MainTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  const leftRoutes = state.routes.slice(0, 2);
-  const rightRoutes = state.routes.slice(2);
-
-  function navigateToCreate() {
-    (navigation.getParent() as { navigate?: (screen: string) => void } | undefined)?.navigate?.("CreateEvent");
-  }
-
   function renderRoute(route: (typeof state.routes)[number]) {
     const focused = state.routes[state.index]?.key === route.key;
     const config = tabConfig[route.name];
@@ -83,15 +75,8 @@ function MainTabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View style={[styles.tabShell, { paddingBottom: Math.max(insets.bottom, 12) }]}>
       <View style={styles.tabRow}>
-        <View style={styles.tabGroup}>{leftRoutes.map(renderRoute)}</View>
-        <View style={styles.centerGap} />
-        <View style={styles.tabGroup}>{rightRoutes.map(renderRoute)}</View>
+        {state.routes.map(renderRoute)}
       </View>
-      <Pressable onPress={navigateToCreate} style={({ pressed }) => [styles.createPressable, pressed && styles.createPressed]}>
-        <LinearGradient colors={[colors.pink, colors.accent]} start={{ x: 0.18, y: 0 }} end={{ x: 0.9, y: 1 }} style={styles.createButton}>
-          <Plus color={colors.text} size={34} strokeWidth={3.2} />
-        </LinearGradient>
-      </Pressable>
     </View>
   );
 }
@@ -166,15 +151,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 8
   },
-  tabGroup: {
-    flex: 1,
-    minWidth: 0,
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  centerGap: {
-    width: 86
-  },
   tabItem: {
     flex: 1,
     minWidth: 0,
@@ -205,30 +181,5 @@ const styles = StyleSheet.create({
   },
   tabLabelActive: {
     color: colors.accent
-  },
-  createPressable: {
-    position: "absolute",
-    left: "50%",
-    top: 10,
-    marginLeft: -31,
-    zIndex: 5,
-    elevation: 24
-  },
-  createButton: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    marginTop: -18,
-    shadowColor: colors.pink,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 18,
-    elevation: 16
-  },
-  createPressed: {
-    transform: [{ scale: 0.94 }],
-    opacity: 0.92
   }
 });
