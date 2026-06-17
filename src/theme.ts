@@ -8,14 +8,14 @@ export const colors = {
   cardElevated: "#1a0d2d",
   border: "#3b225b",
   borderSoft: "rgba(192, 132, 252, 0.18)",
-  paper: "#fbf7ff",
-  paperSoft: "#f2ecff",
-  paperTint: "rgba(251, 247, 255, 0.72)",
-  paperBorder: "#ded2ef",
-  ink: "#160a24",
-  inkSoft: "#2b1740",
-  inkMuted: "#5b4b6f",
-  inkFaint: "#8f7fa4",
+  paper: "#12091f",
+  paperSoft: "#1d1030",
+  paperTint: "rgba(18, 9, 31, 0.82)",
+  paperBorder: "rgba(192, 132, 252, 0.24)",
+  ink: "#fbf7ff",
+  inkSoft: "#eadfff",
+  inkMuted: "#c9bbdc",
+  inkFaint: "#84739c",
   text: "#fbf7ff",
   muted: "#c9bbdc",
   faint: "#84739c",
@@ -55,17 +55,17 @@ export const shadows = {
   },
   paper: {
     shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.14,
-    shadowRadius: 24,
-    elevation: 6
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.34,
+    shadowRadius: 26,
+    elevation: 7
   },
   paperTight: {
     shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 2
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.24,
+    shadowRadius: 16,
+    elevation: 4
   },
   soft: {
     shadowColor: "#000000",

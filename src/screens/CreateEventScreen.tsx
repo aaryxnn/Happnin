@@ -4,10 +4,10 @@ import * as ImagePicker from "expo-image-picker";
 import { Calendar, Clock, ImagePlus, MapPin } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 
 import { AppButton } from "../components/AppButton";
 import { Chip } from "../components/Chip";
+import { MapView, Marker } from "../components/NativeMap";
 import { Screen } from "../components/Screen";
 import { TextField } from "../components/TextField";
 import { useApp } from "../context/AppContext";
@@ -267,24 +267,36 @@ export function CreateEventScreen() {
       ) : null}
 
       <View style={styles.mapShell}>
-        <MapView
-          style={styles.map}
-          userInterfaceStyle="light"
-          region={{
-            latitude,
-            longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
-          }}
-          onPress={(event) => {
-            setLatitude(event.nativeEvent.coordinate.latitude);
-            setLongitude(event.nativeEvent.coordinate.longitude);
-            setSelectedPlaceName("");
-            setNearbyAddresses([]);
-          }}
-        >
-          <Marker coordinate={{ latitude, longitude }} title={venueName || "Event location"} pinColor={colors.accent} />
-        </MapView>
+        {MapView && Marker ? (
+          <MapView
+            style={styles.map}
+            userInterfaceStyle="dark"
+            region={{
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01
+            }}
+            onPress={(event: { nativeEvent: { coordinate: { latitude: number; longitude: number } } }) => {
+              setLatitude(event.nativeEvent.coordinate.latitude);
+              setLongitude(event.nativeEvent.coordinate.longitude);
+              setSelectedPlaceName("");
+              setNearbyAddresses([]);
+            }}
+          >
+            <Marker coordinate={{ latitude, longitude }} title={venueName || "Event location"} pinColor={colors.accent} />
+          </MapView>
+        ) : (
+          <View style={styles.webMapPreview}>
+            <MapPin color={colors.pink} size={24} />
+            <Text style={styles.webMapTitle} numberOfLines={1}>
+              {venueName || "Event location"}
+            </Text>
+            <Text style={styles.webMapCopy} numberOfLines={2}>
+              {address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}
+            </Text>
+          </View>
+        )}
       </View>
 
       <Text style={styles.section}>Poster</Text>
@@ -573,6 +585,26 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1
+  },
+  webMapPreview: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.xs,
+    backgroundColor: colors.backgroundRaised,
+    padding: spacing.md
+  },
+  webMapTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "900",
+    letterSpacing: -0.25,
+    textAlign: "center"
+  },
+  webMapCopy: {
+    color: colors.muted,
+    lineHeight: 20,
+    textAlign: "center"
   },
   posterPicker: {
     minHeight: 220,

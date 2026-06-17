@@ -10,11 +10,10 @@ the app recognizably Happnin.
 
 ## Design Intent
 
-Happnin should feel like a campus-night invitation board: dark, energetic, easy to scan, and
-full of event photography. The canvas stays deep ink. Important event surfaces become bright
-paper cards, like digital flyers pinned against a night background. Purple and pink are used
-as atmospheric washes and selected states, while primary actions use near-black filled buttons
-with moon-white text.
+Happnin should feel like a campus-night poster feed: dark, energetic, easy to scan, and full
+of event photography. The canvas stays deep ink. Important event surfaces are charcoal/plum
+poster cards, not white paper cards. Purple and pink are used as atmospheric accents and
+selected states, while primary actions use near-black filled buttons with moon-white text.
 
 ## Color Tokens
 
@@ -24,11 +23,11 @@ with moon-white text.
 | Raised ink | `colors.backgroundRaised` | `#090511` | Bottom navigation and dark panels |
 | Night surface | `colors.surface` | `#12091f` | Secondary dark panels and maps |
 | Strong night surface | `colors.surfaceStrong` | `#1d1030` | Form panels and overlays |
-| Moon paper | `colors.paper` | `#fbf7ff` | Event cards, sheet cards, light content panels |
-| Paper soft | `colors.paperSoft` | `#f2ecff` | Inputs, chip containers, muted light panels |
-| Paper border | `colors.paperBorder` | `#ded2ef` | Light card hairlines |
-| Ink text | `colors.ink` | `#160a24` | Text on moon paper |
-| Secondary ink | `colors.inkMuted` | `#5b4b6f` | Supporting text on moon paper |
+| Poster card | `colors.paper` | `#12091f` | Event cards, sheet cards, dark content panels |
+| Poster soft | `colors.paperSoft` | `#1d1030` | Inputs, chip containers, raised dark panels |
+| Poster border | `colors.paperBorder` | `rgba(192,132,252,0.24)` | Dark card purple hairlines |
+| Poster text | `colors.ink` | `#fbf7ff` | Text on dark poster surfaces |
+| Secondary poster text | `colors.inkMuted` | `#c9bbdc` | Supporting text on dark poster surfaces |
 | App text | `colors.text` | `#fbf7ff` | Text on dark backgrounds |
 | Muted dark text | `colors.muted` | `#c9bbdc` | Supporting text on dark backgrounds |
 | Purple accent | `colors.accent` | `#a855f7` | Selected states and key icons |
@@ -52,8 +51,8 @@ with moon-white text.
 
 - Buttons use 8-12px radius, not giant glowing capsules unless the control is a chip.
 - Chips, filter tabs, RSVP tags, and category labels use full pill radius.
-- Event cards use 18-22px radius with bright paper content areas and a strong photo region.
-- Light cards use small ink shadows and paper borders instead of neon glow.
+- Event cards use 18-22px radius with dark poster content areas and a strong photo region.
+- Dark poster cards use soft ink shadows and purple hairline borders instead of neon glow.
 - Full-screen dark surfaces can use subtle purple gradients, but controls should not use gradients.
 - Keep the mobile layout comfortable: 16px screen padding, 10-16px internal gaps, and generous bottom spacing above tabs.
 
@@ -67,13 +66,13 @@ the primary fill.
 
 ### Secondary Button
 
-Use moon paper with ink text and paper borders on dark backgrounds. On light panels, use a
-soft paper tint or transparent ink outline.
+Use dark plum surfaces with moon-white text and purple hairline borders. Secondary buttons
+should still feel quiet, but never become white blocks.
 
 ### Chips and Tabs
 
-Default chips are light paper or translucent paper. Selected chips use deep ink text treatment
-or a purple wash with strong contrast. Keep category and date filters pill-shaped.
+Default chips are translucent dark plum. Selected chips use deep ink or a saturated purple
+wash with strong contrast. Keep category and date filters pill-shaped.
 
 ### Event Cards
 
@@ -81,7 +80,7 @@ Event cards should feel like an Instagram-style poster feed:
 
 - Organizer header first: avatar initial, organizer name, venue, verification, and category pill.
 - Tall 4:5 poster image with no title overlay, so event photography feels like the main feed object.
-- Caption-style body below the poster with date/time, RSVP state, title, and stacked meta rows.
+- Dark caption-style body below the poster with date/time, RSVP state, title, and stacked meta rows.
 - Use compact mono-weight icons in the meta rows.
 - Keep shadows soft and physical, not neon.
 
@@ -97,14 +96,14 @@ high contrast. Active icons can use purple/pink washes. Inactive labels should s
 
 ## Screen Notes
 
-- Feed: strongest expression of the new system. Use the poster-like header, paper event cards,
+- Feed: strongest expression of the new system. Use the poster-like header, dark poster event cards,
   pill filters, and compact search.
 - Discover: category tiles should look like small invitation tiles, not dark dashboard cards.
-- Event details: use a large photo hero, light metadata card, paper RSVP panel, and clear
+- Event details: use a large photo hero, dark metadata card, poster RSVP panel, and clear
   black primary RSVP button.
-- Create event: forms should feel calmer and more editorial with paper inputs and clear section
+- Create event: forms should feel calmer and more editorial with dark inputs and clear section
   headings.
-- Profile and Organizer: use clean paper panels over the dark app canvas.
+- Profile and Organizer: use clean dark panels over the dark app canvas.
 
 ## Do
 
@@ -112,7 +111,7 @@ high contrast. Active icons can use purple/pink washes. Inactive labels should s
 - Let event photography carry the energy.
 - Keep primary actions black/ink filled.
 - Use full-pill filters and tags.
-- Use moon-white cards to create contrast against the dark app canvas.
+- Use charcoal/plum poster cards to create contrast against the dark app canvas.
 - Keep icons simple, mono-weight, and high contrast.
 
 ## Don't
@@ -122,4 +121,4 @@ high contrast. Active icons can use purple/pink washes. Inactive labels should s
 - Do not keep the old neon-glow treatment on every card.
 - Do not create nested cards inside cards.
 - Do not add marketing-page sections or explanatory UI copy.
-- Do not let text become low contrast on paper surfaces.
+- Do not reintroduce white card blocks; the feed should stay dark.

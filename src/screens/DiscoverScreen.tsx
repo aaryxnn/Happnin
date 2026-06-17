@@ -56,7 +56,7 @@ export function DiscoverScreen() {
             ]}
             onPress={() => setSelectedCategory(category)}
           >
-            <LinearGradient colors={["rgba(251, 247, 255, 0.98)", "rgba(242, 236, 255, 0.9)"]} style={styles.tileFill} />
+            <LinearGradient colors={["rgba(59, 34, 91, 0.98)", "rgba(18, 9, 31, 0.92)"]} style={styles.tileFill} />
             {index % 4 === 0 ? <UsersRound color={colors.accent} size={22} /> : null}
             {index % 4 === 1 ? <Music color={colors.pink} size={22} /> : null}
             {index % 4 === 2 ? <Trophy color={colors.lime} size={22} /> : null}

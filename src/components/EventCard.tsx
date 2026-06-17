@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { LinearGradient } from "expo-linear-gradient";
 import { Clock, MapPin, ShieldCheck, Users } from "lucide-react-native";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -43,7 +44,15 @@ export function EventCard({ event, isRsvpd }: Props) {
         </View>
       </View>
 
-      <Image source={{ uri: event.imageUrl }} style={styles.poster} resizeMode="cover" />
+      <View style={styles.posterFrame}>
+        <Image source={{ uri: event.imageUrl }} style={styles.poster} resizeMode="cover" />
+        <LinearGradient
+          pointerEvents="none"
+          colors={["rgba(5, 3, 10, 0.18)", "rgba(5, 3, 10, 0.3)", "rgba(5, 3, 10, 0.48)"]}
+          locations={[0, 0.56, 1]}
+          style={styles.posterShade}
+        />
+      </View>
 
       <View style={styles.body}>
         <View style={styles.dateRow}>
@@ -171,23 +180,30 @@ const styles = StyleSheet.create({
     fontWeight: "800"
   },
   category: {
-    backgroundColor: colors.paperSoft,
+    backgroundColor: "rgba(168, 85, 247, 0.18)",
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.paperBorder,
+    borderColor: "rgba(192, 132, 252, 0.38)",
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs
   },
   categoryText: {
-    color: colors.accentStrong,
+    color: colors.purpleGlow,
     fontSize: 11,
     fontWeight: "900",
     letterSpacing: -0.08
   },
-  poster: {
+  posterFrame: {
     width: "100%",
     aspectRatio: 4 / 5,
     backgroundColor: colors.surfaceStrong
+  },
+  poster: {
+    width: "100%",
+    height: "100%"
+  },
+  posterShade: {
+    ...StyleSheet.absoluteFillObject
   },
   body: {
     gap: spacing.xs,
@@ -202,7 +218,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm
   },
   when: {
-    color: colors.accentStrong,
+    color: colors.purpleGlow,
     flexShrink: 1,
     fontSize: 11,
     fontWeight: "900",
@@ -215,7 +231,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4
   },
   rsvpText: {
-    color: colors.ink,
+    color: colors.background,
     fontSize: 11,
     fontWeight: "900",
     letterSpacing: 0.2
