@@ -207,8 +207,8 @@ export function CreateEventScreen() {
             mode={activePicker}
             display={Platform.OS === "ios" ? (activePicker === "date" ? "inline" : "spinner") : "default"}
             onChange={handleDateTimeChange}
-            textColor={colors.text}
-            accentColor={colors.accent}
+            textColor={colors.ink}
+            accentColor={colors.accentStrong}
             minimumDate={new Date()}
           />
         </View>
@@ -226,7 +226,7 @@ export function CreateEventScreen() {
               pressed && styles.placePressed
             ]}
           >
-            <MapPin color={selectedPlaceName === place.name ? colors.background : colors.accent} size={18} />
+            <MapPin color={selectedPlaceName === place.name ? colors.text : colors.accentStrong} size={18} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.placeName, selectedPlaceName === place.name && styles.placeNameSelected]}>{place.name}</Text>
               <Text style={[styles.placeAddress, selectedPlaceName === place.name && styles.placeAddressSelected]}>
@@ -269,7 +269,7 @@ export function CreateEventScreen() {
       <View style={styles.mapShell}>
         <MapView
           style={styles.map}
-          userInterfaceStyle="dark"
+          userInterfaceStyle="light"
           region={{
             latitude,
             longitude,
@@ -450,7 +450,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 34,
     fontWeight: "900",
-    marginBottom: spacing.sm
+    marginBottom: spacing.sm,
+    letterSpacing: -0.5
   },
   copy: {
     color: colors.muted,
@@ -481,12 +482,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm
   },
   pickerPanel: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     overflow: "hidden",
-    marginBottom: spacing.md
+    marginBottom: spacing.md,
+    ...shadows.paperTight
   },
   placeList: {
     gap: spacing.sm,
@@ -496,34 +498,35 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
+    backgroundColor: colors.paper,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    ...shadows.paperTight
   },
   placeSelected: {
-    backgroundColor: colors.accent,
-    borderColor: colors.purpleGlow
+    backgroundColor: colors.background,
+    borderColor: "rgba(251, 247, 255, 0.42)"
   },
   placePressed: {
     opacity: 0.82,
     transform: [{ scale: 0.99 }]
   },
   placeName: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900"
   },
   placeNameSelected: {
-    color: colors.background
+    color: colors.text
   },
   placeAddress: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs,
     lineHeight: 19
   },
   placeAddressSelected: {
-    color: colors.background
+    color: colors.muted
   },
   addressResults: {
     gap: spacing.sm,
@@ -534,37 +537,39 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-    backgroundColor: colors.surfaceStrong,
-    borderRadius: 8,
+    backgroundColor: colors.paper,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    padding: spacing.md
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    ...shadows.paperTight
   },
   resultName: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900"
   },
   resultAddress: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs,
     lineHeight: 19
   },
   resultHint: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    ...shadows.paperTight
   },
   mapShell: {
     height: 210,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     overflow: "hidden",
     marginBottom: spacing.md,
-    ...shadows.soft
+    ...shadows.paperTight
   },
   map: {
     flex: 1
@@ -574,9 +579,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.surface,
-    ...shadows.soft
+    borderColor: colors.paperBorder,
+    backgroundColor: colors.paper,
+    ...shadows.paper
   },
   posterImage: {
     width: "100%",

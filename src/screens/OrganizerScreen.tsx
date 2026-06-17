@@ -72,8 +72,8 @@ export function OrganizerScreen() {
         <View style={styles.panel}>
           <Text style={styles.panelTitle}>Request organizer verification</Text>
           <Text style={styles.status}>Use a club Instagram, website, Linktree, or officer contact as proof.</Text>
-          <TextField label="Organizer or club name" value={displayName} onChangeText={setDisplayName} autoCapitalize="words" />
-          <TextField label="Proof link" value={proofUrl} onChangeText={setProofUrl} placeholder="https://instagram.com/club" />
+          <TextField label="Organizer or club name" value={displayName} onChangeText={setDisplayName} autoCapitalize="words" tone="light" />
+          <TextField label="Proof link" value={proofUrl} onChangeText={setProofUrl} placeholder="https://instagram.com/club" tone="light" />
           <AppButton title="Submit for review" onPress={requestVerification} />
         </View>
       )}
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 36,
     fontWeight: "900",
-    marginBottom: spacing.sm
+    marginBottom: spacing.sm,
+    letterSpacing: -0.55
   },
   copy: {
     color: colors.muted,
@@ -108,12 +109,12 @@ const styles = StyleSheet.create({
   },
   panel: {
     gap: spacing.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    ...shadows.soft
+    ...shadows.paper
   },
   statusRow: {
     flexDirection: "row",
@@ -121,12 +122,13 @@ const styles = StyleSheet.create({
     gap: spacing.md
   },
   panelTitle: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900",
-    fontSize: 18
+    fontSize: 18,
+    letterSpacing: -0.2
   },
   status: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs
   },
   section: {
@@ -137,23 +139,25 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm
   },
   empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md
-  },
-  eventRow: {
-    backgroundColor: colors.surface,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    marginBottom: spacing.sm
+    ...shadows.paperTight
+  },
+  eventRow: {
+    backgroundColor: colors.paper,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+    ...shadows.paperTight
   },
   eventTitle: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900"
   }
 });

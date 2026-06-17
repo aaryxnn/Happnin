@@ -3,7 +3,7 @@ import { StyleSheet, Text } from "react-native";
 import { EventCard } from "../components/EventCard";
 import { Screen } from "../components/Screen";
 import { useApp } from "../context/AppContext";
-import { colors, radius, spacing } from "../theme";
+import { colors, radius, shadows, spacing } from "../theme";
 
 export function SavedScreen() {
   const { events, rsvps } = useApp();
@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 36,
     fontWeight: "900",
-    marginBottom: spacing.sm
+    marginBottom: spacing.sm,
+    letterSpacing: -0.55
   },
   copy: {
     color: colors.muted,
@@ -36,12 +37,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md
   },
   empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    lineHeight: 22
+    lineHeight: 22,
+    ...shadows.paperTight
   }
 });

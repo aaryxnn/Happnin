@@ -32,25 +32,25 @@ function MainTabs() {
           left: 14,
           right: 14,
           bottom: 12,
-          backgroundColor: "rgba(8, 4, 15, 0.96)",
-          borderTopColor: colors.borderSoft,
+          backgroundColor: colors.paper,
+          borderTopColor: colors.paperBorder,
           borderTopWidth: 1,
-          borderColor: colors.borderSoft,
+          borderColor: colors.paperBorder,
           borderWidth: 1,
-          borderRadius: 28,
+          borderRadius: 26,
           height: 72,
           paddingTop: 7,
           paddingBottom: 11,
-          shadowColor: colors.accent,
+          shadowColor: "#000000",
           shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.22,
-          shadowRadius: 28,
+          shadowOpacity: 0.18,
+          shadowRadius: 24,
           elevation: 16
         },
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.faint,
+        tabBarActiveTintColor: colors.ink,
+        tabBarInactiveTintColor: colors.inkFaint,
         tabBarItemStyle: { borderRadius: 22 },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "900" }
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "900", letterSpacing: -0.15 }
       }}
     >
       <Tabs.Screen name="Feed" component={FeedScreen} options={{ tabBarIcon: icon(Sparkles) }} />
@@ -72,10 +72,10 @@ function icon(Icon: ComponentType<LucideProps>) {
         borderRadius: 17,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: focused ? "rgba(168, 85, 247, 0.28)" : "transparent"
+        backgroundColor: focused ? "rgba(168, 85, 247, 0.16)" : "transparent"
       }}
     >
-      <Icon color={focused ? colors.purpleGlow : color} size={size} strokeWidth={2.5} />
+      <Icon color={focused ? colors.accentStrong : color} size={size} strokeWidth={2.5} />
     </View>
   );
 }

@@ -42,8 +42,8 @@ export function ProfileScreen() {
           <Switch
             value={user.visibleRsvpsDefault}
             onValueChange={(visibleRsvpsDefault) => updateProfileSettings({ visibleRsvpsDefault })}
-            thumbColor={colors.text}
-            trackColor={{ false: colors.surfaceSoft, true: colors.accentStrong }}
+            thumbColor={colors.paper}
+            trackColor={{ false: colors.paperBorder, true: colors.accentStrong }}
           />
         </View>
       </View>
@@ -94,42 +94,49 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
-    marginBottom: spacing.lg
+    marginBottom: spacing.lg,
+    backgroundColor: colors.paper,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    ...shadows.paper
   },
   avatar: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: colors.accentStrong,
+    backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
-    ...shadows.glow
+    ...shadows.paperTight
   },
   avatarText: {
-    color: colors.background,
+    color: colors.text,
     fontSize: 30,
     fontWeight: "900"
   },
   title: {
-    color: colors.text,
+    color: colors.ink,
     fontSize: 30,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.45
   },
   email: {
-    color: colors.muted,
+    color: colors.inkMuted,
     fontWeight: "700"
   },
   panel: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
     gap: spacing.sm,
-    ...shadows.soft
+    ...shadows.paperTight
   },
   panelTitle: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900",
     fontSize: 18
   },
@@ -141,15 +148,15 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm
   },
   rowText: {
-    color: colors.muted,
+    color: colors.inkMuted,
     lineHeight: 21
   },
   settingLabel: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900"
   },
   settingHint: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs,
     lineHeight: 19
   },
@@ -170,18 +177,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     borderRadius: radius.md,
     padding: spacing.md,
-    backgroundColor: colors.card,
-    marginBottom: spacing.sm
+    backgroundColor: colors.paper,
+    marginBottom: spacing.sm,
+    ...shadows.paperTight
   },
   clubName: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900"
   },
   clubDescription: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs,
     lineHeight: 20
   },

@@ -23,28 +23,24 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: "rgba(18, 9, 31, 0.86)"
+    paddingVertical: spacing.xs,
+    backgroundColor: colors.paperTint
   },
   selected: {
-    backgroundColor: "rgba(168, 85, 247, 0.94)",
-    borderColor: colors.purpleGlow,
-    shadowColor: colors.pink,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18,
-    shadowRadius: 16,
-    elevation: 3
+    backgroundColor: colors.background,
+    borderColor: "rgba(251, 247, 255, 0.44)"
   },
   pressed: {
     transform: [{ scale: 0.96 }],
     opacity: 0.88
   },
   text: {
-    color: colors.muted,
+    color: colors.inkMuted,
     fontWeight: "900",
-    fontSize: 13
+    fontSize: 13,
+    letterSpacing: -0.15
   },
   selectedText: {
     color: colors.text

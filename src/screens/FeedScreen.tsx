@@ -43,7 +43,7 @@ export function FeedScreen() {
       <LinearGradient colors={["#3b0764", "#1b0733", "#08040f"]} style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.livePill}>
-            <Text style={styles.liveDot}>●</Text>
+            <View style={styles.liveDot} />
             <Text style={styles.eyebrow}>{campus.shortName}</Text>
           </View>
           <Text style={styles.count}>{totalEvents} live</Text>
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
   header: {
     gap: spacing.md,
     marginBottom: spacing.lg,
-    padding: spacing.md,
+    padding: spacing.lg,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
+    borderColor: "rgba(251, 247, 255, 0.18)",
+    ...shadows.paper
   },
   headerTop: {
     flexDirection: "row",
@@ -127,23 +127,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs,
-    backgroundColor: "rgba(251, 247, 255, 0.08)",
+    backgroundColor: colors.paper,
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs
   },
   liveDot: {
-    color: colors.lime,
-    fontSize: 10
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.lime
   },
   eyebrow: {
-    color: colors.text,
-    fontWeight: "900"
+    color: colors.ink,
+    fontWeight: "900",
+    letterSpacing: -0.1
   },
   count: {
-    color: colors.muted,
+    color: colors.lime,
     fontWeight: "900",
     fontSize: 12
   },
@@ -151,7 +154,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 34,
     lineHeight: 38,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.5
   },
   statRow: {
     flexDirection: "row",
@@ -159,19 +163,20 @@ const styles = StyleSheet.create({
   },
   stat: {
     flex: 1,
-    backgroundColor: "rgba(5, 3, 10, 0.44)",
+    backgroundColor: colors.paper,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.sm
   },
   statValue: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900",
-    fontSize: 18
+    fontSize: 18,
+    letterSpacing: -0.25
   },
   statLabel: {
-    color: colors.muted,
+    color: colors.inkMuted,
     fontWeight: "800",
     fontSize: 12,
     marginTop: spacing.xs
@@ -186,13 +191,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md
   },
   empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    lineHeight: 22
+    lineHeight: 22,
+    ...shadows.paperTight
   }
 });
 

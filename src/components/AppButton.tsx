@@ -14,6 +14,9 @@ type Props = {
 };
 
 export function AppButton({ title, onPress, variant = "primary", disabled, loading, icon: Icon }: Props) {
+  const foreground =
+    variant === "secondary" ? colors.ink : variant === "danger" ? colors.danger : colors.text;
+
   return (
     <Pressable
       onPress={onPress}
@@ -26,11 +29,13 @@ export function AppButton({ title, onPress, variant = "primary", disabled, loadi
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === "primary" ? colors.background : colors.text} />
+        <ActivityIndicator color={foreground} />
       ) : (
         <View style={styles.inner}>
-          {Icon ? <Icon color={variant === "primary" ? colors.text : colors.text} size={18} strokeWidth={2.5} /> : null}
-          <Text style={[styles.text, variant === "primary" && styles.primaryText]}>{title}</Text>
+          {Icon ? <Icon color={foreground} size={18} strokeWidth={2.5} /> : null}
+          <Text style={[styles.text, variant === "secondary" && styles.secondaryText, variant === "danger" && styles.dangerText]}>
+            {title}
+          </Text>
         </View>
       )}
     </Pressable>
@@ -39,13 +44,12 @@ export function AppButton({ title, onPress, variant = "primary", disabled, loadi
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 50,
-    borderRadius: radius.pill,
+    minHeight: 48,
+    borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: spacing.md,
-    borderWidth: 1,
-    ...shadows.soft
+    paddingHorizontal: spacing.lg,
+    borderWidth: 1
   },
   inner: {
     flexDirection: "row",
@@ -53,22 +57,22 @@ const styles = StyleSheet.create({
     gap: spacing.sm
   },
   primary: {
-    backgroundColor: colors.accent,
-    borderColor: colors.purpleGlow,
-    shadowColor: colors.pink,
-    shadowOpacity: 0.22
+    backgroundColor: colors.background,
+    borderColor: "rgba(251, 247, 255, 0.42)",
+    ...shadows.paperTight
   },
   secondary: {
-    backgroundColor: colors.cardElevated,
-    borderColor: colors.borderSoft
+    backgroundColor: colors.paperSoft,
+    borderColor: colors.paperBorder,
+    ...shadows.paperTight
   },
   ghost: {
     backgroundColor: "transparent",
-    borderColor: colors.borderSoft,
+    borderColor: "rgba(251, 247, 255, 0.34)",
     shadowOpacity: 0
   },
   danger: {
-    backgroundColor: "rgba(255, 107, 138, 0.1)",
+    backgroundColor: "rgba(255, 107, 138, 0.12)",
     borderColor: colors.danger,
     shadowOpacity: 0
   },
@@ -82,9 +86,13 @@ const styles = StyleSheet.create({
   text: {
     color: colors.text,
     fontWeight: "800",
-    fontSize: 15
+    fontSize: 14,
+    letterSpacing: -0.2
   },
-  primaryText: {
-    color: colors.text
+  secondaryText: {
+    color: colors.ink
+  },
+  dangerText: {
+    color: colors.danger
   }
 });

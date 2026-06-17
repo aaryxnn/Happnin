@@ -47,8 +47,16 @@ export function DiscoverScreen() {
 
       <View style={styles.grid}>
         {categories.map((category, index) => (
-          <Pressable key={category} style={({ pressed }) => [styles.tile, pressed && styles.tilePressed]} onPress={() => setSelectedCategory(category)}>
-            <LinearGradient colors={["rgba(168, 85, 247, 0.2)", "rgba(18, 9, 31, 0.92)"]} style={styles.tileFill} />
+          <Pressable
+            key={category}
+            style={({ pressed }) => [
+              styles.tile,
+              { transform: [{ rotate: index % 2 === 0 ? "-1deg" : "1deg" }] },
+              pressed && styles.tilePressed
+            ]}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <LinearGradient colors={["rgba(251, 247, 255, 0.98)", "rgba(242, 236, 255, 0.9)"]} style={styles.tileFill} />
             {index % 4 === 0 ? <UsersRound color={colors.accent} size={22} /> : null}
             {index % 4 === 1 ? <Music color={colors.pink} size={22} /> : null}
             {index % 4 === 2 ? <Trophy color={colors.lime} size={22} /> : null}
@@ -72,7 +80,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 36,
     fontWeight: "900",
-    marginBottom: spacing.sm
+    marginBottom: spacing.sm,
+    letterSpacing: -0.55
   },
   copy: {
     color: colors.muted,
@@ -89,14 +98,14 @@ const styles = StyleSheet.create({
   tile: {
     width: "48%",
     minHeight: 128,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    backgroundColor: colors.card,
+    borderColor: colors.paperBorder,
+    backgroundColor: colors.paper,
     padding: spacing.md,
     justifyContent: "space-between",
     overflow: "hidden",
-    ...shadows.soft
+    ...shadows.paperTight
   },
   tileFill: {
     position: "absolute",
@@ -110,12 +119,13 @@ const styles = StyleSheet.create({
     opacity: 0.82
   },
   tileText: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900",
-    fontSize: 18
+    fontSize: 18,
+    letterSpacing: -0.25
   },
   tileCount: {
-    color: colors.muted,
+    color: colors.inkMuted,
     fontWeight: "800"
   },
   section: {
@@ -128,12 +138,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md
   },
   empty: {
-    color: colors.muted,
-    backgroundColor: colors.surface,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    lineHeight: 22
+    lineHeight: 22,
+    ...shadows.paperTight
   }
 });

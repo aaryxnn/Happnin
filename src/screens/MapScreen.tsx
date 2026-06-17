@@ -15,7 +15,7 @@ export function MapScreen() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        userInterfaceStyle="dark"
+        userInterfaceStyle="light"
         initialRegion={{
           latitude: campus.latitude,
           longitude: campus.longitude,
@@ -31,7 +31,7 @@ export function MapScreen() {
               coordinate={{ latitude: event.latitude, longitude: event.longitude }}
               title={event.title}
               description={event.venueName}
-              pinColor={colors.accent}
+              pinColor={colors.accentStrong}
               onCalloutPress={() => navigation.navigate("EventDetails", { eventId: event.id })}
             />
           ))}
@@ -57,20 +57,21 @@ const styles = StyleSheet.create({
     left: spacing.md,
     right: spacing.md,
     bottom: 100,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    ...shadows.glow
+    ...shadows.paper
   },
   title: {
-    color: colors.text,
+    color: colors.ink,
     fontSize: 20,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.25
   },
   copy: {
-    color: colors.muted,
+    color: colors.inkMuted,
     marginTop: spacing.xs,
     lineHeight: 20
   }

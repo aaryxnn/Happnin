@@ -1,8 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { LinearGradient } from "expo-linear-gradient";
-import { Calendar, MapPin, ShieldCheck, Users } from "lucide-react-native";
-import { ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import { Clock, MapPin, ShieldCheck, Users } from "lucide-react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { RootStackParamList } from "../navigation/types";
 import { colors, radius, shadows, spacing } from "../theme";
@@ -16,176 +15,233 @@ type Props = {
 export function EventCard({ event, isRsvpd }: Props) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const start = new Date(event.startsAt);
+  const organizerInitial = event.organizerName.trim().charAt(0).toUpperCase() || "H";
 
   return (
     <Pressable
       onPress={() => navigation.navigate("EventDetails", { eventId: event.id })}
+      accessibilityRole="button"
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
-      <ImageBackground source={{ uri: event.imageUrl }} imageStyle={styles.image} style={styles.imageWrap}>
-        <LinearGradient
-          colors={["rgba(5, 3, 10, 0)", "rgba(5, 3, 10, 0.42)", "rgba(5, 3, 10, 0.96)"]}
-          style={styles.overlay}
-        />
-        <View style={styles.topRow}>
-          <View style={styles.category}>
-            <Text style={styles.categoryText}>{event.category}</Text>
+      <View style={styles.header}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>{organizerInitial}</Text>
+        </View>
+        <View style={styles.headerText}>
+          <View style={styles.organizerLine}>
+            <Text style={styles.organizerName} numberOfLines={1}>
+              {event.organizerName}
+            </Text>
+            {event.organizerVerified ? <ShieldCheck color={colors.green} size={14} strokeWidth={2.6} /> : null}
           </View>
+          <Text style={styles.venueName} numberOfLines={1}>
+            {event.venueName}
+          </Text>
+        </View>
+        <View style={styles.category}>
+          <Text style={styles.categoryText}>{event.category}</Text>
+        </View>
+      </View>
+
+      <Image source={{ uri: event.imageUrl }} style={styles.poster} resizeMode="cover" />
+
+      <View style={styles.body}>
+        <View style={styles.dateRow}>
+          <Text style={styles.when}>
+            {start.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }).toUpperCase()}
+            {"  /  "}
+            {start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }).toUpperCase()}
+          </Text>
           {isRsvpd ? (
             <View style={styles.rsvpPill}>
-              <Text style={styles.rsvpText}>RSVP'd</Text>
+              <Text style={styles.rsvpText}>GOING</Text>
             </View>
           ) : null}
         </View>
-        <View style={styles.titleWrap}>
-          <Text style={styles.when}>
-            {start.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} at{" "}
-            {start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-          </Text>
-          <Text style={styles.title}>{event.title}</Text>
-          <View style={styles.organizerRow}>
-            {event.organizerVerified ? <ShieldCheck color={colors.green} size={16} /> : null}
-            <Text style={styles.organizer}>{event.organizerName}</Text>
+
+        <Text style={styles.title} numberOfLines={2}>
+          {event.title}
+        </Text>
+
+        <View style={styles.meta}>
+          <View style={styles.metaItem}>
+            <Users color={colors.accentStrong} size={15} strokeWidth={2.4} />
+            <Text style={styles.metaText}>{event.rsvpCount} interested</Text>
           </View>
-        </View>
-      </ImageBackground>
-      <View style={styles.meta}>
-        <View style={styles.metaItem}>
-          <Users color={colors.lime} size={16} />
-          <Text style={styles.metaText}>{event.rsvpCount} interested</Text>
-        </View>
-        <View style={styles.metaItem}>
-          <MapPin color={colors.pink} size={16} />
-          <Text style={styles.metaText}>{event.venueName}</Text>
-        </View>
-        <View style={styles.metaItem}>
-          <Calendar color={colors.accent} size={16} />
-          <Text style={styles.metaText}>{timeUntil(start)}</Text>
+          <View style={styles.metaItem}>
+            <Clock color={colors.pink} size={15} strokeWidth={2.4} />
+            <Text style={styles.metaText}>{relativeDay(start)}</Text>
+          </View>
+          <View style={styles.metaItem}>
+            <MapPin color={colors.lime} size={15} strokeWidth={2.4} />
+            <Text style={styles.metaText} numberOfLines={1}>
+              {event.address}
+            </Text>
+          </View>
         </View>
       </View>
     </Pressable>
   );
 }
 
-function timeUntil(date: Date) {
-  const diff = date.getTime() - Date.now();
-  if (diff <= 0) return "Starting soon";
-  const hours = Math.round(diff / (60 * 60 * 1000));
-  if (hours < 24) return `${hours}h away`;
-  const days = Math.round(hours / 24);
-  return `${days}d away`;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function startOfWeek(date: Date) {
+  const start = startOfDay(date);
+  start.setDate(start.getDate() - start.getDay());
+  return start;
+}
+
+function relativeDay(date: Date) {
+  const today = startOfDay(new Date());
+  const target = startOfDay(date);
+  const diffDays = Math.round((target.getTime() - today.getTime()) / MS_PER_DAY);
+
+  if (diffDays < 0) return "Happening now";
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
+
+  const weekDelta = Math.round((startOfWeek(target).getTime() - startOfWeek(today).getTime()) / (7 * MS_PER_DAY));
+  if (weekDelta === 0) {
+    return `This ${date.toLocaleDateString(undefined, { weekday: "long" })}`;
+  }
+
+  return `In ${diffDays} days`;
 }
 
 const styles = StyleSheet.create({
   card: {
     overflow: "hidden",
     borderRadius: radius.lg,
-    backgroundColor: colors.cardElevated,
+    backgroundColor: colors.paper,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     marginBottom: spacing.lg,
-    ...shadows.glow
+    ...shadows.paper
   },
   pressed: {
-    transform: [{ scale: 0.985 }],
-    opacity: 0.92
+    transform: [{ scale: 0.992 }],
+    opacity: 0.95
   },
-  imageWrap: {
-    height: 244,
-    justifyContent: "space-between",
-    padding: spacing.md
-  },
-  image: {
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg
-  },
-  topRow: {
+  header: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start"
-  },
-  category: {
-    backgroundColor: "rgba(168, 85, 247, 0.92)",
-    borderRadius: radius.pill,
+    alignItems: "center",
+    gap: spacing.sm,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.purpleGlow
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.paper
   },
-  categoryText: {
-    color: colors.text,
-    fontWeight: "900",
-    fontSize: 12
-  },
-  rsvpPill: {
-    backgroundColor: "rgba(255, 78, 205, 0.24)",
+  avatar: {
+    width: 38,
+    height: 38,
     borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.pink
+    backgroundColor: colors.background,
+    alignItems: "center",
+    justifyContent: "center"
   },
-  rsvpText: {
+  avatarText: {
     color: colors.text,
-    fontWeight: "900",
-    fontSize: 12
-  },
-  titleWrap: {
-    gap: spacing.sm
-  },
-  when: {
-    color: colors.purpleGlow,
-    fontWeight: "900",
-    fontSize: 12
-  },
-  title: {
-    color: colors.text,
-    fontSize: 27,
-    lineHeight: 31,
+    fontSize: 14,
     fontWeight: "900"
   },
-  organizerRow: {
+  headerText: {
+    flex: 1,
+    gap: 2,
+    minWidth: 0
+  },
+  organizerLine: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs
   },
-  organizer: {
-    color: colors.text,
-    fontWeight: "800",
-    opacity: 0.92
+  organizerName: {
+    color: colors.ink,
+    flexShrink: 1,
+    fontSize: 14,
+    fontWeight: "900",
+    letterSpacing: -0.18
+  },
+  venueName: {
+    color: colors.inkMuted,
+    fontSize: 12,
+    fontWeight: "800"
+  },
+  category: {
+    backgroundColor: colors.paperSoft,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs
+  },
+  categoryText: {
+    color: colors.accentStrong,
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: -0.08
+  },
+  poster: {
+    width: "100%",
+    aspectRatio: 4 / 5,
+    backgroundColor: colors.surfaceStrong
+  },
+  body: {
+    gap: spacing.xs,
+    padding: spacing.md,
+    backgroundColor: colors.paper
+  },
+  dateRow: {
+    minHeight: 26,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.sm
+  },
+  when: {
+    color: colors.accentStrong,
+    flexShrink: 1,
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 0.3
+  },
+  rsvpPill: {
+    backgroundColor: colors.lime,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4
+  },
+  rsvpText: {
+    color: colors.ink,
+    fontSize: 11,
+    fontWeight: "900",
+    letterSpacing: 0.2
+  },
+  title: {
+    color: colors.ink,
+    fontSize: 25,
+    lineHeight: 29,
+    fontWeight: "900",
+    letterSpacing: -0.4
   },
   meta: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    padding: spacing.md,
-    backgroundColor: colors.card
+    gap: spacing.xs,
+    marginTop: spacing.xs
   },
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs,
-    backgroundColor: "rgba(251, 247, 255, 0.04)",
-    borderWidth: 1,
-    borderColor: colors.borderSoft,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    maxWidth: "100%"
+    minWidth: 0
   },
   metaText: {
-    color: colors.muted,
+    color: colors.inkMuted,
+    flexShrink: 1,
+    fontSize: 13,
     fontWeight: "800",
-    fontSize: 12,
-    flexShrink: 1
+    lineHeight: 18
   }
 });

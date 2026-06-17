@@ -108,25 +108,26 @@ const styles = StyleSheet.create({
   header: {
     gap: spacing.sm,
     marginBottom: spacing.lg,
-    backgroundColor: colors.card,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    ...shadows.soft
+    ...shadows.paper
   },
   eyebrow: {
     color: colors.accent,
     fontWeight: "900"
   },
   title: {
-    color: colors.text,
+    color: colors.ink,
     fontSize: 34,
     lineHeight: 38,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.5
   },
   copy: {
-    color: colors.muted,
+    color: colors.inkMuted,
     fontSize: 16,
     lineHeight: 23
   },
@@ -160,9 +161,15 @@ const styles = StyleSheet.create({
     fontWeight: "900"
   },
   empty: {
-    color: colors.muted,
+    color: colors.inkMuted,
+    backgroundColor: colors.paper,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
     marginTop: spacing.sm,
-    lineHeight: 20
+    lineHeight: 20,
+    ...shadows.paperTight
   },
   cta: {
     marginTop: spacing.xl

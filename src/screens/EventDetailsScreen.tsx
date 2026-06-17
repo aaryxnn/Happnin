@@ -52,7 +52,7 @@ export function EventDetailsScreen() {
     <Screen>
       <View style={styles.hero}>
         <Image source={{ uri: event.imageUrl }} style={styles.image} />
-        <LinearGradient colors={["rgba(5, 3, 10, 0)", "rgba(5, 3, 10, 0.82)"]} style={styles.imageFade} />
+        <LinearGradient colors={["rgba(168, 85, 247, 0.08)", "rgba(5, 3, 10, 0.86)"]} style={styles.imageFade} />
       </View>
       <View style={styles.categoryRow}>
         <Text style={styles.category}>{event.category}</Text>
@@ -82,8 +82,8 @@ export function EventDetailsScreen() {
             value={visibleRsvp}
             disabled={Boolean(rsvp)}
             onValueChange={setVisibleRsvp}
-            thumbColor={colors.text}
-            trackColor={{ false: colors.surfaceSoft, true: colors.accentStrong }}
+            thumbColor={colors.paper}
+            trackColor={{ false: colors.paperBorder, true: colors.accentStrong }}
           />
         </View>
         <AppButton
@@ -91,7 +91,7 @@ export function EventDetailsScreen() {
           onPress={() => toggleRsvp(event.id, visibleRsvp)}
           variant={rsvp ? "secondary" : "primary"}
         />
-        <AppButton title="Share event" onPress={shareEvent} variant="ghost" icon={Send} />
+        <AppButton title="Share event" onPress={shareEvent} variant="secondary" icon={Send} />
       </View>
 
       <View style={styles.attendees}>
@@ -121,7 +121,7 @@ export function EventDetailsScreen() {
 function Meta({ icon: Icon, text }: { icon: ComponentType<LucideProps>; text: string }) {
   return (
     <View style={styles.metaRow}>
-      <Icon color={colors.accent} size={18} />
+      <Icon color={colors.accentStrong} size={18} />
       <Text style={styles.metaText}>{text}</Text>
     </View>
   );
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
+    borderColor: "rgba(251, 247, 255, 0.18)",
+    ...shadows.paper
   },
   imageFade: {
     position: "absolute",
@@ -156,13 +156,24 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm
   },
   category: {
-    color: colors.accent,
-    fontWeight: "900"
+    color: colors.ink,
+    fontWeight: "900",
+    backgroundColor: colors.paper,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    overflow: "hidden"
   },
   verified: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs
+    gap: spacing.xs,
+    backgroundColor: "rgba(69, 245, 167, 0.12)",
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs
   },
   verifiedText: {
     color: colors.green,
@@ -174,7 +185,8 @@ const styles = StyleSheet.create({
     fontSize: 34,
     lineHeight: 39,
     fontWeight: "900",
-    marginBottom: spacing.sm
+    marginBottom: spacing.sm,
+    letterSpacing: -0.5
   },
   description: {
     color: colors.muted,
@@ -184,13 +196,13 @@ const styles = StyleSheet.create({
   },
   metaBox: {
     gap: spacing.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
     marginBottom: spacing.md,
-    ...shadows.soft
+    ...shadows.paperTight
   },
   metaRow: {
     flexDirection: "row",
@@ -198,19 +210,19 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   metaText: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "700",
     flex: 1
   },
   rsvpPanel: {
     gap: spacing.md,
-    backgroundColor: colors.surfaceStrong,
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
-    ...shadows.glow
+    borderColor: colors.paperBorder,
+    ...shadows.paper
   },
   rsvpTop: {
     flexDirection: "row",
@@ -218,18 +230,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   panelTitle: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "900",
-    fontSize: 17
+    fontSize: 17,
+    letterSpacing: -0.2
   },
   panelCopy: {
-    color: colors.muted,
+    color: colors.inkMuted,
     lineHeight: 20,
     marginTop: spacing.xs
   },
   attendees: {
     gap: spacing.sm,
-    marginBottom: spacing.lg
+    marginBottom: spacing.lg,
+    backgroundColor: colors.paper,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.paperBorder,
+    padding: spacing.md,
+    ...shadows.paperTight
   },
   attendee: {
     flexDirection: "row",
@@ -240,7 +259,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -249,7 +268,7 @@ const styles = StyleSheet.create({
     fontWeight: "900"
   },
   attendeeName: {
-    color: colors.text,
+    color: colors.ink,
     fontWeight: "800"
   },
   report: {

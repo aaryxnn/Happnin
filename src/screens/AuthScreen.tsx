@@ -59,8 +59,8 @@ export function AuthScreen() {
             </View>
 
             <View style={styles.form}>
-              <TextField label={`School email (${formatAllowedDomains()})`} value={email} onChangeText={setEmail} />
-              <TextField label="Password" value={password} onChangeText={setPassword} secureTextEntry />
+              <TextField label={`School email (${formatAllowedDomains()})`} value={email} onChangeText={setEmail} tone="light" />
+              <TextField label="Password" value={password} onChangeText={setPassword} secureTextEntry tone="light" />
               <AppButton
                 title={mode === "signUp" ? "Create account" : "Log in"}
                 onPress={submit}
@@ -70,7 +70,7 @@ export function AuthScreen() {
               <AppButton
                 title={mode === "signUp" ? "I already have an account" : "Create a new account"}
                 onPress={() => setMode(mode === "signUp" ? "signIn" : "signUp")}
-                variant="ghost"
+                variant="secondary"
               />
             </View>
           </ScrollView>
@@ -99,25 +99,27 @@ const styles = StyleSheet.create({
     gap: spacing.md
   },
   logo: {
-    color: colors.text,
+    color: colors.ink,
     fontSize: 20,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.2
   },
   logoPill: {
     alignSelf: "flex-start",
     borderRadius: radius.pill,
-    backgroundColor: "rgba(168, 85, 247, 0.28)",
+    backgroundColor: colors.paper,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    ...shadows.soft
+    ...shadows.paperTight
   },
   headline: {
     color: colors.text,
     fontSize: 42,
     lineHeight: 46,
-    fontWeight: "900"
+    fontWeight: "900",
+    letterSpacing: -0.7
   },
   copy: {
     color: colors.muted,
@@ -130,11 +132,11 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: spacing.md,
-    backgroundColor: "rgba(8, 4, 15, 0.78)",
+    backgroundColor: colors.paper,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.paperBorder,
     padding: spacing.md,
-    ...shadows.glow
+    ...shadows.paper
   }
 });
