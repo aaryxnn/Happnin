@@ -83,9 +83,9 @@ function MainTabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View style={[styles.tabShell, { paddingBottom: Math.max(insets.bottom, 12) }]}>
       <View style={styles.tabRow}>
-        {leftRoutes.map(renderRoute)}
-        <View style={styles.createSlot} />
-        {rightRoutes.map(renderRoute)}
+        <View style={styles.tabGroup}>{leftRoutes.map(renderRoute)}</View>
+        <View style={styles.centerGap} />
+        <View style={styles.tabGroup}>{rightRoutes.map(renderRoute)}</View>
       </View>
       <Pressable onPress={navigateToCreate} style={({ pressed }) => [styles.createPressable, pressed && styles.createPressed]}>
         <LinearGradient colors={[colors.pink, colors.accent]} start={{ x: 0.18, y: 0 }} end={{ x: 0.9, y: 1 }} style={styles.createButton}>
@@ -166,6 +166,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 8
   },
+  tabGroup: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  centerGap: {
+    width: 86
+  },
   tabItem: {
     flex: 1,
     minWidth: 0,
@@ -190,21 +199,20 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     color: colors.inkFaint,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0
   },
   tabLabelActive: {
     color: colors.accent
   },
-  createSlot: {
-    width: 68
-  },
   createPressable: {
     position: "absolute",
     left: "50%",
     top: 10,
-    marginLeft: -31
+    marginLeft: -31,
+    zIndex: 5,
+    elevation: 24
   },
   createButton: {
     width: 62,
