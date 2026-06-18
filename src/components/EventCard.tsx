@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "rgba(168, 85, 247, 0.48)",
     backgroundColor: "#090511",
-    marginBottom: 18,
+    marginBottom: 26,
     ...shadows.paper
   },
   cardFill: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     opacity: 0.96
   },
   header: {
-    minHeight: 64,
+    minHeight: 70,
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   posterFrame: {
     width: "100%",
-    aspectRatio: 1.86,
+    aspectRatio: 4 / 5,
     overflow: "hidden",
     borderRadius: 9,
     borderWidth: 1,
@@ -283,16 +283,16 @@ const styles = StyleSheet.create({
   },
   posterHeadline: {
     color: colors.text,
-    fontSize: 52,
-    lineHeight: 55,
+    fontSize: 66,
+    lineHeight: 68,
     fontWeight: "900",
     textAlign: "center",
     letterSpacing: 0
   },
   posterHeadlineAccent: {
     marginTop: -8,
-    fontSize: 45,
-    lineHeight: 48,
+    fontSize: 58,
+    lineHeight: 60,
     fontWeight: "900",
     textAlign: "center",
     letterSpacing: 0
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   posterKicker: {
     color: colors.text,
     marginTop: spacing.xs,
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: "900",
     letterSpacing: 0,
     textAlign: "center",
@@ -309,8 +309,8 @@ const styles = StyleSheet.create({
   body: {
     gap: spacing.sm,
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md
   },
   detailTop: {
     flexDirection: "row",

@@ -55,7 +55,7 @@ selected states, while primary actions use near-black filled buttons with moon-w
 - Buttons use 8-12px radius, except feed filters and RSVP/status pills which use full radius.
 - Chips, filter tabs, RSVP tags, and category labels use full pill radius.
 - Event cards are intentionally large, with strong purple borders, dark poster content areas,
-  and a wide graphic poster region.
+  and a tall Instagram-post-style graphic poster region.
 - Dark poster cards use soft ink shadows and purple hairline borders instead of neon glow.
 - Full-screen dark surfaces can use subtle purple gradients, but controls should not use gradients.
 - Keep the mobile layout comfortable: 16px screen padding, 10-16px internal gaps, and generous bottom spacing above tabs.
@@ -84,8 +84,8 @@ Event cards should feel like an Instagram-style poster feed:
 
 - Organizer header first: avatar initial, organizer name, venue, verification, category pill,
   and a more/options icon.
-- Use a wide poster image area with bold graphic typography over the photo, closer to a campus
-  event flyer than a plain image card.
+- Use a tall 4:5 poster image area with bold graphic typography over the photo, closer to a
+  campus event flyer than a plain image card.
 - Dark caption-style body below the poster with pink date, time range, RSVP state, bookmark,
   title, and compact meta row.
 - Use compact mono-weight icons in the meta rows with subtle separators.

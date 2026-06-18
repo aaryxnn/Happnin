@@ -142,7 +142,7 @@ function matchesDateFilter(startsAt: string, filter: DateFilter) {
 
 const styles = StyleSheet.create({
   screen: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 12,
     paddingTop: spacing.lg
   },
   heroRow: {
@@ -226,12 +226,12 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   filterScroller: {
-    marginHorizontal: -18,
+    marginHorizontal: -12,
     marginBottom: spacing.md
   },
   filters: {
     gap: spacing.sm,
-    paddingHorizontal: 18,
+    paddingHorizontal: 12,
     paddingBottom: spacing.xs
   },
   filterPill: {
